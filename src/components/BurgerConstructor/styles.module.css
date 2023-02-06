@@ -1,0 +1,65 @@
+.wrap{
+    display: flex;
+    flex-direction: column;
+    width:calc(  100%   / 2 );
+    margin-left: 20px;
+
+}
+.selectedIngredientsWrap{
+    display: flex;
+    flex-direction: column;
+    margin-top: 90px;
+}
+.selectedIngredients{
+    flex-direction: column;
+    display: flex;
+    margin: 0 auto;
+}
+
+.selectedIngredient{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+}
+
+.dragonAndDropItem{
+    min-width: 24px;
+    margin-right: 10px;
+    display: flex;
+    align-self: center;
+    justify-content: flex-start;
+}
+.backgroundItem{
+    justify-content:flex-end;
+    background: #1C1C21;
+
+}
+
+.scrollPart{
+    padding-right: 8px;
+    overflow: auto;
+    max-height: 456px;
+    display: flex;
+    flex-direction: column;
+    margin: 14px 0;
+
+}
+
+.selectedIngredient-mb {
+    margin-top: 14px;
+}
+
+.selectedIngredient-mb:first-of-type {
+    margin-top: 0;
+}
+
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #1C1C21;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #8585AD;
+}

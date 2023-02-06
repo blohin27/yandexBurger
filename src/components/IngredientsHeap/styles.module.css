@@ -1,0 +1,15 @@
+.ingredients {
+    overflow-y: scroll;
+    height: 680px;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #1C1C21;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #8585AD;
+}

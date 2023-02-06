@@ -1,0 +1,16 @@
+.wrap{
+    flex-direction: row;
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+    align-content: center;
+    align-items: center;
+
+}
+.button{
+    margin-left: 40px;
+}
+.icon{
+
+
+}
