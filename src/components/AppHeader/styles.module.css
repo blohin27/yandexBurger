@@ -1,0 +1,35 @@
+.wrap {
+    background: #1C1C21;
+}
+
+.contentHeader {
+    max-width: 1240px;
+    display: flex;
+    height: 88px;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.leftBlock {
+    display: flex;
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.centralBlock {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.rightBlock {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+    flex-basis: 0;
+}
+a{
+    text-decoration: none;
+    color: white;
+}

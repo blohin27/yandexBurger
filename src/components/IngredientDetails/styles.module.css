@@ -1,0 +1,41 @@
+.wrap {
+    font-family: 'Jet Brains Mono';
+    min-width: 640px;
+}
+
+.icon {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.name {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.structureIngredients {
+    display: flex;
+    justify-content: center;
+}
+
+.structureItem {
+    font-family: 'Iceland', cursive;
+    text-align: center;
+    padding: 0 25px;
+}
+
+.structureItemText {
+    margin-bottom: 8px;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.structureItemValue {
+    font-family: 'Iceland';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 24px;
+}
