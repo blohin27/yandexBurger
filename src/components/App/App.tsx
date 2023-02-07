@@ -17,9 +17,13 @@ export const App = () => {
   const [ingredientDetails, setIngredientDetails] = useState<IIngredient | null>(null);
 
   const fetchData = useCallback(async () => {
+
     const data = await fetch(INGREDIENTS_URL);
-    const result: IResponse = await data.json();
-    setData(result);
+    if (data.ok){
+      const result: IResponse = await data.json();
+      setData(result);
+    } else alert("Ошибка HTTP: " + data.status);
+
   }, []);
 
   useEffect(() => {

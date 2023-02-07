@@ -39,6 +39,7 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
   if (!open) return null;
 
   return (
+    <>
     <ModalOverlay onClick={onClose}>
       <div className={classNames(styles.wrap)} onClick={stopPropagation}>
         <div className={classNames(styles.header)}>
@@ -52,5 +53,6 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
         </div>
       </div>
     </ModalOverlay>
+    </>
   );
 };
