@@ -36,11 +36,26 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
     event.stopPropagation()
   }, []);
 
+  useEffect(() => {
+    const body = document.getElementsByTagName('body');
+
+    const bodyStyle = body[0]?.style;
+
+    if (bodyStyle) {
+      if (open) {
+
+        bodyStyle.overflow = 'hidden'
+      } else {
+        bodyStyle.overflow = 'auto'
+      }
+    }
+
+  }, [open])
+
   if (!open) return null;
 
   return (
-    <>
-    <ModalOverlay onClick={onClose}>
+    <div className={styles.modal}>
       <div className={classNames(styles.wrap)} onClick={stopPropagation}>
         <div className={classNames(styles.header)}>
           <div className={styles.title}>{title}</div>
@@ -52,7 +67,7 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
           {children}
         </div>
       </div>
-    </ModalOverlay>
-    </>
+      <ModalOverlay onClick={onClose} />
+    </div>
   );
 };

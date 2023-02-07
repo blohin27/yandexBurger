@@ -10,6 +10,6 @@ export const ModalOverlay: FC<PropsWithChildren<IModalOverlay>> = ({
                                                                      children,
                                                                    }) => {
   return <div className={styles.overlay} onClick={onClick}>
-    {children}
+
   </div>;
 };
