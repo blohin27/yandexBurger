@@ -5,17 +5,17 @@ import {
 import styles from "./styles.module.css";
 import classNames from "classnames";
 import { OrderDetails } from "../OrderDetails/OrderDetails";
-import { FC, useEffect, useMemo } from "react";
+import { FC, useEffect } from "react";
 import { IIngredient } from "../../types/types";
 import { useIngredientsCategories } from "../../common/IngredientsHelper";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import {
   addIngredientInConstructor,
-  deleteIngredientInConstructor,
   totalPriceFunc,
 } from "../../services/reducers/listIngredientsConstructorSlice";
 import { useDrop } from "react-dnd";
 import nextId from "react-id-generator";
+import { ConstructorElementComponent } from "../ConstructorElement/ConstructorElement";
 
 interface IBurgerConstructor {
   selectedItems?: IIngredient[];
@@ -54,8 +54,6 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
     },
   });
 
-  console.log("ingredientsBun", ingredientsBun);
-
   return (
     <div className={styles.wrap}>
       <div className={classNames(styles.selectedIngredientsWrap)}>
@@ -78,29 +76,21 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
           </div>
 
           <div className={styles.scrollPart}>
-            {ingredients.map(({ _id, name, price, image_large, idGen }) => (
-              <div
-                key={nextId()}
-                className={classNames(
-                  styles.selectedIngredient,
-                  styles["selectedIngredient-mb"]
-                )}
-              >
-                <div className={styles.dragonAndDropItem}>
-                  <DragIcon type="primary" />
-                </div>
-                <ConstructorElement
-                  handleClose={() => {
-                    dispatch(deleteIngredientInConstructor(idGen));
-                  }}
-                  extraClass={styles.backgroundItem}
-                  isLocked={false}
-                  text={name}
+            {ingredients.map(
+              (
+                { _id, name, price, image_large, idGen = nextId() },
+                index: number
+              ) => (
+                <ConstructorElementComponent
+                  key={idGen}
+                  idGen={idGen}
                   price={price}
-                  thumbnail={image_large}
+                  name={name}
+                  image_large={image_large}
+                  index={index}
                 />
-              </div>
-            ))}
+              )
+            )}
           </div>
           <div className={styles.selectedIngredient}>
             <div className={styles.dragonAndDropItem}></div>

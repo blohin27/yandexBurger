@@ -1,19 +1,41 @@
 import { IngredientTypes } from "../IngredientTypes/IngredientTypes";
-import { forwardRef } from "react";
+import React, { forwardRef, useCallback } from "react";
 import styles from "./styles.module.css";
 import { IIngredient } from "../../types/types";
 import { useIngredientsCategories } from "../../common/IngredientsHelper";
 
 interface IIngredientsHeap {
   items: IIngredient[];
+  currentTab: string;
+  setCurrentTab: (tab: string) => void;
 }
 
-export const IngredientsHeap = forwardRef<HTMLInputElement, IIngredientsHeap>(
-  ({ items }, ref) => {
+export const IngredientsHeap = forwardRef<HTMLDivElement, IIngredientsHeap>(
+  ({ items, setCurrentTab, currentTab }, ref) => {
     const { arrayBun, arraySauce, arrayMain } = useIngredientsCategories(items);
-
+    const onScroll = useCallback(
+      (event: React.UIEvent<HTMLDivElement>) => {
+        const sauceTOp =
+          (document.getElementById("ingredient-sauce")?.getBoundingClientRect()
+            .top || 0) - event.currentTarget.offsetTop;
+        const mainTOp =
+          (document.getElementById("ingredient-main")?.getBoundingClientRect()
+            .top || 0) - event.currentTarget.offsetTop;
+        if (mainTOp < 0 && currentTab !== "main") {
+          setCurrentTab("main");
+        }
+        if (mainTOp > 0 && sauceTOp < 0 && currentTab !== "sauce") {
+          console.log("соусы");
+          setCurrentTab("sauce");
+        }
+        if (sauceTOp > 0 && currentTab !== "bun") {
+          setCurrentTab("bun");
+        }
+      },
+      [currentTab, setCurrentTab]
+    );
     return (
-      <div className={styles.ingredients} ref={ref}>
+      <div className={styles.ingredients} ref={ref} onScroll={onScroll}>
         {arrayBun && (
           <IngredientTypes
             id={"ingredient-bun"}

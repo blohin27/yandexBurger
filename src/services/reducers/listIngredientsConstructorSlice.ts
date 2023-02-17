@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IIngredient } from "../../types/types";
+import update from "immutability-helper";
 
 export interface IStateListIngredients {
   ingredientsConstructor: IIngredient[] | [];
@@ -71,6 +72,16 @@ const listIngredientsConstructorSlice = createSlice({
 
       state.ingredientsConstructor = [...newState];
     },
+
+    changeIndex: (
+      state: IStateListIngredients,
+      action: PayloadAction<{ a: number; b: number }>
+    ) => {
+      const itemA = state.ingredientsConstructor[action.payload.a];
+      const itemB = state.ingredientsConstructor[action.payload.b];
+      state.ingredientsConstructor.splice(action.payload.a, 1, itemB);
+      state.ingredientsConstructor.splice(action.payload.b, 1, itemA);
+    },
   },
 });
 
@@ -79,5 +90,7 @@ export const {
   totalPriceFunc,
   addIngredientInConstructor,
   deleteIngredientInConstructor,
+
+  changeIndex,
 } = listIngredientsConstructorSlice.actions;
 export default listIngredientsConstructorSlice.reducer;
