@@ -15,10 +15,11 @@ export interface IIngredient {
   fat: number;
   carbohydrates: number;
   calories: number;
+  idGen?: string;
 }
 
 export interface IIngredientsCategories {
-  arrayMain: IIngredient[],
-  arrayBun: IIngredient[],
-  arraySauce: IIngredient[],
+  arrayMain: IIngredient[];
+  arrayBun: IIngredient[];
+  arraySauce: IIngredient[];
 }

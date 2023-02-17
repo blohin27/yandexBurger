@@ -1,66 +1,76 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import {AppHeader} from "../AppHeader/AppHeader";
-import {BurgerIngredient} from "../BurgerIngredients/BurgerIngredient";
-import {BurgerConstructor} from "../BurgerConstructor/BurgerConstructor";
+import { AppHeader } from "../AppHeader/AppHeader";
+import { BurgerIngredient } from "../BurgerIngredients/BurgerIngredient";
+import { BurgerConstructor } from "../BurgerConstructor/BurgerConstructor";
 import styles from "./styles.module.css";
-import {Modal} from "../Modal/Modal";
-import {IngredientDetails} from "../IngredientDetails/IngredientDetails";
-import {IIngredient, IResponse} from "../../types/types";
-import {Order} from "../Order/Order";
+import { Modal } from "../Modal/Modal";
+import { IngredientDetails } from "../IngredientDetails/IngredientDetails";
+import { Order } from "../Order/Order";
+import { fetchData } from "../../services/reducers/listIngredientsSlice";
+import { useAppDispatch, useAppSelector } from "../../services/store/store";
+import { setIngredientDetails } from "../../services/reducers/currentIngredientDetailsSlice";
 
-const INGREDIENTS_URL = "https://norma.nomoreparties.space/api/ingredients"
+import {
+  clearOrder,
+  createdOrderRequest,
+  setOpenOrder,
+} from "../../services/reducers/createdOrderSlice";
 
 export const App = () => {
-  const [data, setData] = useState<IResponse | null>(null);
-  const [openOrder, setOpenOrder] = useState(false);
-  const [ingredientDetails, setIngredientDetails] = useState<IIngredient | null>(null);
+  const data = useAppSelector(
+    (state) => state.listIngredientsSlice.ingredients
+  );
+  const arrayIngredientsForCreatedOrder = useAppSelector(
+    (state) => state.listIngredientsConstructorSlice
+  );
+  const ingredientDetails = useAppSelector(
+    (state) => state.currentIngredientDetailsSlice.currentIngredient
+  );
+  const orderDetails = useAppSelector((state) => state.createdOrderSlice);
 
-  const fetchData = useCallback(async () => {
-
-    const data = await fetch(INGREDIENTS_URL);
-    if (data.ok){
-      const result: IResponse = await data.json();
-      setData(result);
-    } else alert("Ошибка HTTP: " + data.status);
-
-  }, []);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    fetchData().catch(console.error);
-  }, []);
+    dispatch(fetchData());
+  }, [dispatch]);
+
+  useEffect(() => {
+    //dispatch(setIngredientsAll(data ? data : null));
+  }, [data, dispatch]);
 
   const clearDetails = useCallback(() => {
-    setIngredientDetails(null);
-  }, [])
+    dispatch(setIngredientDetails(null));
+  }, [dispatch]);
 
   const onCloseOrder = useCallback(() => {
-    setOpenOrder(false);
-  }, [])
+    dispatch(setOpenOrder(false));
+    dispatch(clearOrder());
+  }, [dispatch]);
 
   const onOpenOrder = useCallback(() => {
-    setOpenOrder(true);
-  }, [])
+    // @ts-ignore
+    console.log("data.lenght", data);
+    if (data && data.length > 0) {
+      dispatch(setOpenOrder(true));
+
+      dispatch(createdOrderRequest(arrayIngredientsForCreatedOrder));
+    }
+  }, [arrayIngredientsForCreatedOrder, data, dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
 
       <div className={styles.appContent}>
-        <BurgerIngredient
-          items={data?.data}
-          setIngredientDetails={setIngredientDetails}
-        />
+        <BurgerIngredient items={data ? data : undefined} />
         <BurgerConstructor
-          selectedItems={data?.data}
+          selectedItems={data ?? undefined}
           openOrder={onOpenOrder}
         />
       </div>
 
-      <Modal
-        open={openOrder}
-        onClose={onCloseOrder}
-      >
+      <Modal open={orderDetails.openOrder} onClose={onCloseOrder}>
         <Order />
       </Modal>
 

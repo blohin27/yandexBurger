@@ -1,19 +1,15 @@
 import styles from "./styles.module.css";
 import classNames from "classnames";
-import {Tabs} from "../Tabs/Tabs";
-import {FC, useCallback, useEffect, useRef, useState} from "react";
-import {IngredientsHeap} from "../IngredientsHeap/IngredientsHeap";
-import {IIngredient} from "../../types/types";
+import { Tabs } from "../Tabs/Tabs";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { IngredientsHeap } from "../IngredientsHeap/IngredientsHeap";
+import { IIngredient } from "../../types/types";
 
 interface IBurgerIngredient {
   items?: IIngredient[];
-  setIngredientDetails: (e: IIngredient) => void;
 }
 
-export const BurgerIngredient: FC<IBurgerIngredient> = ({
-                                                          setIngredientDetails,
-                                                          items = [],
-                                                        }) => {
+export const BurgerIngredient: FC<IBurgerIngredient> = ({ items = [] }) => {
   const [currentTab, setCurrentTab] = useState("bun");
   const ref = useRef<HTMLInputElement>(null);
 
@@ -23,8 +19,7 @@ export const BurgerIngredient: FC<IBurgerIngredient> = ({
     const scrollTo = (block?.offsetTop || 0) - topToScrollHeight;
 
     scrollToActiveTab(scrollTo);
-
-  }, [currentTab])
+  }, [currentTab]);
 
   const scrollToActiveTab = useCallback((y: number) => {
     ref.current?.scroll(0, y);
@@ -39,7 +34,7 @@ export const BurgerIngredient: FC<IBurgerIngredient> = ({
         <IngredientsHeap
           ref={ref}
           items={items}
-          setIngredientDetails={setIngredientDetails}
+          // setIngredientDetails={setIngredientDetails}
         />
       </div>
     </div>

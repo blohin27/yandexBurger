@@ -1,22 +1,20 @@
 import styles from "./styles.module.css";
 import classNames from "classnames";
-import {IngredientItem} from "../IngredientItem/IngredientItem";
-import {FC} from "react";
-import {IIngredient} from "../../types/types";
+import { IngredientItem } from "../IngredientItem/IngredientItem";
+import { FC } from "react";
+import { IIngredient } from "../../types/types";
 
 interface IIngredientTypes {
   id: string;
   data: IIngredient[];
   text: string;
-  setIngredientDetails: (e: IIngredient) => void;
 }
 
 export const IngredientTypes: FC<IIngredientTypes> = ({
-                                                        setIngredientDetails,
-                                                        text,
-                                                        data = [],
-                                                        id,
-                                                      }) => {
+  text,
+  data = [],
+  id,
+}) => {
   return (
     <div
       id={id}
@@ -30,11 +28,7 @@ export const IngredientTypes: FC<IIngredientTypes> = ({
       <div className={classNames(styles.items, "pl-4 pr-4")}>
         {data.map((item) => {
           return (
-            <IngredientItem
-              key={`IngredientItem${item._id}`}
-              item={item}
-              setIngredientDetails={setIngredientDetails}
-            />
+            <IngredientItem key={`IngredientItem${item._id}`} item={item} />
           );
         })}
       </div>
