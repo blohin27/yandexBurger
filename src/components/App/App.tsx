@@ -16,6 +16,7 @@ import {
   createdOrderRequest,
   setOpenOrder,
 } from "../../services/reducers/createdOrderSlice";
+import { clearListIngredietnConstructor } from "../../services/reducers/listIngredientsConstructorSlice";
 
 export const App = () => {
   const data = useAppSelector(
@@ -38,6 +39,7 @@ export const App = () => {
   const onCloseOrder = useCallback(() => {
     dispatch(setOpenOrder(false));
     dispatch(clearOrder());
+    dispatch(clearListIngredietnConstructor());
   }, [dispatch]);
 
   const onOpenOrder = useCallback(() => {

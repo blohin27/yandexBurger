@@ -55,7 +55,12 @@ const listIngredientsConstructorSlice = createSlice({
 
       state.ingredientsConstructor = [...newState];
     },
-
+    clearListIngredietnConstructor: (
+      state: IStateListIngredientsConstructor,
+      action: PayloadAction<string | undefined>
+    ) => {
+      state.ingredientsConstructor = [];
+    },
     changeIndex: (
       state: IStateListIngredientsConstructor,
       action: PayloadAction<{ a: number; b: number }>
@@ -73,5 +78,6 @@ export const {
   addIngredientInConstructor,
   deleteIngredientInConstructor,
   changeIndex,
+  clearListIngredietnConstructor,
 } = listIngredientsConstructorSlice.actions;
 export default listIngredientsConstructorSlice.reducer;

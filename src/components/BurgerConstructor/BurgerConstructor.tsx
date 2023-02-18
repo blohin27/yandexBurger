@@ -22,8 +22,7 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
   openOrder,
 }) => {
   const dispatch = useAppDispatch();
-  const { arrayBun, arraySauce, arrayMain } =
-    useIngredientsCategories(selectedItems);
+  const { arrayBun } = useIngredientsCategories(selectedItems);
 
   useEffect(() => {
     arrayBun[0] && dispatch(addIngredientInConstructor(arrayBun[0]));

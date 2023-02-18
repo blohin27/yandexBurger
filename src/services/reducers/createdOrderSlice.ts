@@ -4,7 +4,6 @@ import { bodyRequestForOrder } from "../../common/helper";
 
 import {
   ICreatedOrder,
-  IStateListIngredients,
   IStateListIngredientsConstructor,
   TypeOrderDetails,
 } from "../../types/types";
