@@ -20,11 +20,9 @@ export const IngredientTypes: FC<IIngredientTypes> = ({
     >
       <p className="text text_type_main-medium mb-6 ">{text} </p>
       <div className={classNames(styles.items, "pl-4 pr-4")}>
-        {data.map((item) => {
-          return (
-            <IngredientItem key={`IngredientItem${item._id}`} item={item} />
-          );
-        })}
+        {data.map((item) => (
+          <IngredientItem key={`IngredientItem${item._id}`} item={item} />
+        ))}
       </div>
     </div>
   );

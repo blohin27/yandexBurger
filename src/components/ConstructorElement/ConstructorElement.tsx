@@ -22,9 +22,7 @@ export const ConstructorElementComponent: FC<IConstructorElementComponent> = ({
   index,
 }) => {
   const dispatch = useAppDispatch();
-  const array = useAppSelector(
-    (state) => state.listIngredientsConstructorSlice.ingredientsConstructor
-  );
+
   const ref = useRef<HTMLDivElement>(null);
   const [_, dropTarget2] = useDrop({
     accept: "ingredients",

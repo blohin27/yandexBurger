@@ -32,7 +32,6 @@ export const IngredientsHeap = forwardRef<HTMLDivElement, IIngredientsHeap>(
         {arrayBun && (
           <IngredientTypes
             id={"ingredient-bun"}
-            key={"ingredient-bun"}
             data={arrayBun}
             text={"Булки"}
           />
@@ -40,7 +39,6 @@ export const IngredientsHeap = forwardRef<HTMLDivElement, IIngredientsHeap>(
         {arraySauce && (
           <IngredientTypes
             id={"ingredient-sauce"}
-            key={"ingredient-sauce"}
             data={arraySauce}
             text={"Соусы"}
           />
@@ -48,7 +46,6 @@ export const IngredientsHeap = forwardRef<HTMLDivElement, IIngredientsHeap>(
         {arrayMain && (
           <IngredientTypes
             id={"ingredient-main"}
-            key={"ingredient-main"}
             data={arrayMain}
             text={"Начинки"}
           />

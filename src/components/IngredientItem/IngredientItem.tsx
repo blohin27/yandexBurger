@@ -31,17 +31,14 @@ export const IngredientItem: FC<IIngredientItemComponent> = ({ item }) => {
   return (
     <div ref={dragRef} className={classNames(styles.wrap)}>
       <div className={classNames(styles.item)} onClick={onClick}>
-        <div
-          className={"ml-4 pl-4 mr-3 pr-4 "}
-          style={{ position: "relative" }}
-        >
+        <div className={classNames("ml-4 pl-4 mr-3 pr-4 ", styles.main)}>
           <img
             width={"240px"}
             height={"120px"}
             src={item.image}
             className={classNames("mt-2")}
           />
-          <div style={{ position: "absolute", top: "0px", right: "0px" }}>
+          <div>
             {counterIngredients(ingredientsConstructor, item) !== 0 && (
               <Counter
                 count={counterIngredients(ingredientsConstructor, item)}
@@ -51,7 +48,7 @@ export const IngredientItem: FC<IIngredientItemComponent> = ({ item }) => {
             )}
           </div>
         </div>
-        <div style={{ display: "flex" }}>
+        <div className={styles.priceBlock}>
           <div className={"mb-1 mr-2"}>
             <p className="text text_type_digits-default"> {item.price}</p>
           </div>

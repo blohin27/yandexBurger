@@ -19,3 +19,9 @@
     width: 272px;
     height: 48px;
 }
+.main{
+    position: relative;
+}
+.priceBlock{
+    display: flex;
+}

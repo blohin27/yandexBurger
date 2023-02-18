@@ -53,7 +53,7 @@ export const App = () => {
       <AppHeader />
 
       <div className={styles.appContent}>
-        <BurgerIngredient items={data ? data : undefined} />
+        <BurgerIngredient items={data ?? undefined} />
         <BurgerConstructor
           selectedItems={data ?? undefined}
           openOrder={onOpenOrder}
