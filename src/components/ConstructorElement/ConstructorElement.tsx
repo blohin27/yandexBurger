@@ -1,4 +1,4 @@
-import { FC, LegacyRef, useRef } from "react";
+import { FC, useRef } from "react";
 
 import classNames from "classnames";
 import {

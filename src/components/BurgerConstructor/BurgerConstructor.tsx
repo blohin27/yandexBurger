@@ -1,7 +1,4 @@
-import {
-  ConstructorElement,
-  DragIcon,
-} from "@ya.praktikum/react-developer-burger-ui-components";
+import { ConstructorElement } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./styles.module.css";
 import classNames from "classnames";
 import { OrderDetails } from "../OrderDetails/OrderDetails";

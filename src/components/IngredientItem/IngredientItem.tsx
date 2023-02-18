@@ -4,8 +4,8 @@ import {
   Counter,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { FC, useCallback, useMemo } from "react";
-import { IIngredient, IIngredientItemComponent } from "../../types/types";
+import { FC, useCallback } from "react";
+import { IIngredientItemComponent } from "../../types/types";
 import { setIngredientDetails } from "../../services/reducers/currentIngredientDetailsSlice";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import { useDrag } from "react-dnd";

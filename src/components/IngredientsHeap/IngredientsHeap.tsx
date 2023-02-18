@@ -1,7 +1,7 @@
 import { IngredientTypes } from "../IngredientTypes/IngredientTypes";
 import React, { forwardRef, useCallback } from "react";
 import styles from "./styles.module.css";
-import { IIngredient, IIngredientsHeap } from "../../types/types";
+import { IIngredientsHeap } from "../../types/types";
 import { useIngredientsCategories } from "../../common/IngredientsHelper";
 
 export const IngredientsHeap = forwardRef<HTMLDivElement, IIngredientsHeap>(

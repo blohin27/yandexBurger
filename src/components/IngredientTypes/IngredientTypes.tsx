@@ -2,7 +2,7 @@ import styles from "./styles.module.css";
 import classNames from "classnames";
 import { IngredientItem } from "../IngredientItem/IngredientItem";
 import { FC } from "react";
-import { IIngredient, IIngredientTypes } from "../../types/types";
+import { IIngredientTypes } from "../../types/types";
 
 export const IngredientTypes: FC<IIngredientTypes> = ({
   text,

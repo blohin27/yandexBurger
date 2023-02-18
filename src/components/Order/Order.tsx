@@ -1,14 +1,9 @@
-import React, { FC, memo, useState } from "react";
+import React, { FC, memo } from "react";
 import styles from "./styles.module.css";
 import classNames from "classnames";
 import done from "../../images/done.png";
 import { useAppSelector } from "../../services/store/store";
-import {
-  BeatLoader,
-  MoonLoader,
-  PacmanLoader,
-  ScaleLoader,
-} from "react-spinners";
+import { MoonLoader } from "react-spinners";
 
 export const Order: FC = memo(() => {
   const orderDetails = useAppSelector(

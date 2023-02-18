@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 
 import { AppHeader } from "../AppHeader/AppHeader";
 import { BurgerIngredient } from "../BurgerIngredients/BurgerIngredient";
