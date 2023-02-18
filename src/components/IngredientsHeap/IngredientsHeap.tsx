@@ -19,7 +19,6 @@ export const IngredientsHeap = forwardRef<HTMLDivElement, IIngredientsHeap>(
           setCurrentTab("main");
         }
         if (mainTOp > 0 && sauceTOp < 0 && currentTab !== "sauce") {
-          console.log("соусы");
           setCurrentTab("sauce");
         }
         if (sauceTOp > 0 && currentTab !== "bun") {

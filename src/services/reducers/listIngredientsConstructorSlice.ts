@@ -47,11 +47,9 @@ const listIngredientsConstructorSlice = createSlice({
       state: IStateListIngredientsConstructor,
       action: PayloadAction<string | undefined>
     ) => {
-      console.log("Удаление в ред", action.payload);
       const newState = state.ingredientsConstructor.filter(
         (item) => item.idGen !== action.payload
       );
-      console.log(newState);
 
       state.ingredientsConstructor = [...newState];
     },

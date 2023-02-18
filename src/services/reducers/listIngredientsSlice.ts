@@ -38,7 +38,6 @@ const listIngredients = createSlice({
       state: IStateListIngredients,
       action: PayloadAction<IIngredient[] | null>
     ) => {
-      console.log("Ингред зацетились");
       state.ingredients = action.payload;
     },
 

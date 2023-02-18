@@ -7,10 +7,8 @@ import styles from "./styles.module.css";
 import { Modal } from "../Modal/Modal";
 import { IngredientDetails } from "../IngredientDetails/IngredientDetails";
 import { Order } from "../Order/Order";
-import { fetchData } from "../../services/reducers/listIngredientsSlice";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import { setIngredientDetails } from "../../services/reducers/currentIngredientDetailsSlice";
-
 import {
   clearOrder,
   createdOrderRequest,
@@ -43,7 +41,6 @@ export const App = () => {
   }, [dispatch]);
 
   const onOpenOrder = useCallback(() => {
-    console.log("data.lenght", data);
     if (data && data.length > 0) {
       dispatch(setOpenOrder(true));
 

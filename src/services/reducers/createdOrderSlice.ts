@@ -34,7 +34,6 @@ export const createdOrderRequest = createAsyncThunk(
       }
     } catch (e) {
       return rejectWithValue("Ошибка сработал rejectWithValue ");
-      console.log("Ошибка создания заказа", e);
     }
   }
 );
@@ -65,7 +64,6 @@ const createdOrderSlice = createSlice({
       state: ICreatedOrder,
       action: PayloadAction<TypeOrderDetails>
     ) => {
-      console.log(" state.isFetchError = true;");
       state.isFetchError = true;
     },
   },
