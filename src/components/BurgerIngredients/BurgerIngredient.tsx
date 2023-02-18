@@ -3,13 +3,15 @@ import classNames from "classnames";
 import { Tabs } from "../Tabs/Tabs";
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { IngredientsHeap } from "../IngredientsHeap/IngredientsHeap";
-import { IIngredient } from "../../types/types";
-
-interface IBurgerIngredient {
-  items?: IIngredient[];
-}
+import { IBurgerIngredient, IIngredient } from "../../types/types";
+import { fetchData } from "../../services/reducers/listIngredientsSlice";
+import { useAppDispatch, useAppSelector } from "../../services/store/store";
 
 export const BurgerIngredient: FC<IBurgerIngredient> = ({ items = [] }) => {
+  const dispatch = useAppDispatch();
+  const isFetchError = useAppSelector(
+    (state) => state.listIngredientsSlice.isFetchError
+  );
   const ref = useRef<HTMLDivElement>(null);
   const [currentTab, setCurrentTab] = useState("bun");
 
@@ -28,19 +30,30 @@ export const BurgerIngredient: FC<IBurgerIngredient> = ({ items = [] }) => {
     },
     [scrollToActiveTab]
   );
+  useEffect(() => {
+    dispatch(fetchData());
+  }, [dispatch]);
   return (
     <div className={styles.wrap}>
       <div className={classNames(styles.content)}>
         <p className="text text_type_main-large mt-10 mb-5">Соберите бургер</p>
 
         <Tabs setCurrentTab={onSetCurrentTab} currentTab={currentTab} />
-        <IngredientsHeap
-          setCurrentTab={setCurrentTab}
-          currentTab={currentTab}
-          ref={ref}
-          items={items}
-          // setIngredientDetails={setIngredientDetails}
-        />
+        {!isFetchError ? (
+          <IngredientsHeap
+            setCurrentTab={setCurrentTab}
+            currentTab={currentTab}
+            ref={ref}
+            items={items}
+          />
+        ) : (
+          <div
+            className="text text_type_main-large mt-10 mb-5"
+            style={{ color: "red" }}
+          >
+            Ошибка при получении ингредиентов
+          </div>
+        )}
       </div>
     </div>
   );

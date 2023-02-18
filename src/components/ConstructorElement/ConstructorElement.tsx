@@ -12,14 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import styles from "./styles.module.css";
 import { useDrag, useDrop } from "react-dnd";
-
-interface IConstructorElementComponent {
-  idGen?: string;
-  name: string;
-  price: number;
-  image_large: string;
-  index: number;
-}
+import { DragItemType, IConstructorElementComponent } from "../../types/types";
 
 export const ConstructorElementComponent: FC<IConstructorElementComponent> = ({
   idGen,
@@ -34,19 +27,17 @@ export const ConstructorElementComponent: FC<IConstructorElementComponent> = ({
   );
   const ref = useRef<HTMLDivElement>(null);
   const [_, dropTarget2] = useDrop({
-    accept: "ingred2",
-    drop(item: any) {
-      console.log("Сработал второй дроп item", item);
+    accept: "ingredients",
+    drop(item: DragItemType) {
       const dragIndex = item.index;
       const hoverIndex = index;
-      console.log("dragIndex", array[dragIndex].idGen);
-      console.log("hoverIndex", array[hoverIndex].idGen);
+
       dispatch(changeIndex({ a: dragIndex, b: hoverIndex }));
     },
   });
 
   const [, dragRef2] = useDrag({
-    type: "ingred2",
+    type: "ingredients",
     item: { index },
     collect: (monitor) => ({ isDrag: monitor.isDragging() }),
   });

@@ -14,12 +14,10 @@ export const Order: FC = memo(() => {
   const orderDetails = useAppSelector(
     (state) => state.createdOrderSlice.OrderDetails
   );
+  const isFetchError = useAppSelector(
+    (state) => state.createdOrderSlice.isFetchError
+  );
 
-  const override = {
-    display: "block",
-    margin: "0 auto",
-    borderColor: "red",
-  };
   return (
     <div className={styles.wrap}>
       {orderDetails?.success ? (
@@ -46,13 +44,17 @@ export const Order: FC = memo(() => {
             Дождитесь готовности на орбитальной станции
           </p>
         </>
-      ) : (
+      ) : !isFetchError ? (
         <MoonLoader
           color={"#505aff"}
           loading={true}
           speedMultiplier={1}
           size={200}
         />
+      ) : (
+        <p className="text text_type_main-large  m-25">
+          ОШИБКА создания заказа
+        </p>
       )}
     </div>
   );

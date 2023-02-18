@@ -1,20 +1,30 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { INGREDIENTS_URL } from "../../const/const";
-import { IIngredient, IResponse } from "../../types/types";
+import {
+  IIngredient,
+  IResponse,
+  IStateListIngredients,
+} from "../../types/types";
 
-interface IStateListIngredients {
-  ingredients: IIngredient[] | null;
-}
 const initialState: IStateListIngredients = {
   ingredients: [],
+  isFetchError: false,
 };
 
 export const fetchData = createAsyncThunk(
   "listIngredients/fetchData",
-  async () => {
-    const response = await fetch(INGREDIENTS_URL);
-    const data: IResponse = await response.json();
-    return data.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(INGREDIENTS_URL);
+      if (response.status === 200) {
+        const data: IResponse = await response.json();
+        return data.data;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      return rejectWithValue("Ошибка получения данныз");
+    }
   }
 );
 
@@ -24,24 +34,25 @@ const listIngredients = createSlice({
   reducers: {},
 
   extraReducers: {
-    // @ts-ignore
-    [fetchData.fulfilled]: (
+    [fetchData.fulfilled.toString()]: (
       state: IStateListIngredients,
       action: PayloadAction<IIngredient[] | null>
     ) => {
       console.log("Ингред зацетились");
       state.ingredients = action.payload;
     },
-    // @ts-ignore
-    [fetchData.pending]: (
+
+    [fetchData.pending.toString()]: (
       state: IStateListIngredients,
       action: PayloadAction<IIngredient[] | null>
     ) => {},
-    // @ts-ignore
-    [fetchData.rejected]: (
+
+    [fetchData.rejected.toString()]: (
       state: IStateListIngredients,
       action: PayloadAction<IIngredient[] | null>
-    ) => {},
+    ) => {
+      state.isFetchError = true;
+    },
   },
 });
 

@@ -1,39 +1,42 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IIngredient, IResponse } from "../../types/types";
-import { CREATED_ORDER_URL, INGREDIENTS_URL } from "../../const/const";
+import { CREATED_ORDER_URL } from "../../const/const";
 import { bodyRequestForOrder } from "../../common/helper";
-import { IStateListIngredients } from "./listIngredientsConstructorSlice";
 
-type TypeOrder = { number: number };
-type TypeOrderDetails = {
-  name: string;
-  order: TypeOrder;
-  success: boolean;
-};
-interface ICreatedOrder {
-  OrderDetails: TypeOrderDetails | null;
-  openOrder: boolean;
-}
+import {
+  ICreatedOrder,
+  IStateListIngredients,
+  IStateListIngredientsConstructor,
+  TypeOrderDetails,
+} from "../../types/types";
 
 const initialState: ICreatedOrder = {
   OrderDetails: null,
   openOrder: false,
+  isFetchError: false,
 };
 
 export const createdOrderRequest = createAsyncThunk(
   "createdOrderSlice/createdOrderRequest",
-  async (param: IStateListIngredients) => {
-    console.log("param", param);
+  async (param: IStateListIngredientsConstructor, { rejectWithValue }) => {
     const bodyRequest = bodyRequestForOrder(param);
-    const response = await fetch(CREATED_ORDER_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bodyRequest),
-    });
-    const data: TypeOrderDetails = await response.json();
-    return data;
+    try {
+      const response = await fetch(CREATED_ORDER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyRequest),
+      });
+      if (response.status === 200) {
+        const data: TypeOrderDetails = await response.json();
+        return data;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      return rejectWithValue("Ошибка сработал rejectWithValue ");
+      console.log("Ошибка создания заказа", e);
+    }
   }
 );
 
@@ -46,20 +49,26 @@ const createdOrderSlice = createSlice({
     },
     clearOrder: (state: ICreatedOrder) => {
       state.OrderDetails = null;
+      state.isFetchError = false;
     },
   },
   extraReducers: {
-    // @ts-ignore
-    [createdOrderRequest.pending]: () => {},
-    // @ts-ignore
-    [createdOrderRequest.fulfilled]: (
+    [createdOrderRequest.pending.toString()]: () => {},
+
+    [createdOrderRequest.fulfilled.toString()]: (
       state: ICreatedOrder,
       action: PayloadAction<TypeOrderDetails>
     ) => {
       state.OrderDetails = action.payload;
     },
-    // @ts-ignore
-    [createdOrderRequest.rejected]: () => {},
+
+    [createdOrderRequest.rejected.toString()]: (
+      state: ICreatedOrder,
+      action: PayloadAction<TypeOrderDetails>
+    ) => {
+      console.log(" state.isFetchError = true;");
+      state.isFetchError = true;
+    },
   },
 });
 

@@ -1,16 +1,12 @@
-import { IIngredient } from "../types/types";
-import { IStateListIngredients } from "../services/reducers/listIngredientsConstructorSlice";
+import { IIngredient, IStateListIngredientsConstructor } from "../types/types";
 
-export const bodyRequestForOrder = (data: IStateListIngredients) => {
+export const bodyRequestForOrder = (data: IStateListIngredientsConstructor) => {
   const arrayIngredients = [
-    // @ts-ignore
     data.ingredientsBun[0],
-    // @ts-ignore
     ...data.ingredientsConstructor,
-    // @ts-ignore
     data.ingredientsBun[1],
   ];
-  // @ts-ignore
+
   const arrayRezult = arrayIngredients.map((item: IIngredient) => item._id);
 
   return {
@@ -19,14 +15,13 @@ export const bodyRequestForOrder = (data: IStateListIngredients) => {
 };
 
 export const counterIngredients = (
-  data: IStateListIngredients,
+  data: IStateListIngredientsConstructor,
   item: IIngredient
 ) => {
   const arrayIngredientsAll = [
     ...data.ingredientsBun,
     ...data.ingredientsConstructor,
   ];
-  // @ts-ignore
 
   const counter = [];
   for (let current of arrayIngredientsAll) {
@@ -37,3 +32,12 @@ export const counterIngredients = (
 
   return counter.length;
 };
+export function searchTotalPrice(array: IIngredient[]) {
+  const result = array.reduce(
+    (accumulator: number, currentValue: IIngredient) =>
+      accumulator + currentValue.price,
+    0
+  );
+
+  return result;
+}

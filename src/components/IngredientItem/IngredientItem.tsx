@@ -5,16 +5,12 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { FC, useCallback, useMemo } from "react";
-import { IIngredient } from "../../types/types";
+import { IIngredient, IIngredientItemComponent } from "../../types/types";
 import { setIngredientDetails } from "../../services/reducers/currentIngredientDetailsSlice";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import { useDrag } from "react-dnd";
 import nextId from "react-id-generator";
 import { counterIngredients } from "../../common/helper";
-
-interface IIngredientItemComponent {
-  item: IIngredient;
-}
 
 export const IngredientItem: FC<IIngredientItemComponent> = ({ item }) => {
   const dispatch = useAppDispatch();

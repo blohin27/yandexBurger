@@ -1,9 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IIngredient } from "../../types/types";
-
-interface ICurrentIngrendient {
-  currentIngredient: IIngredient | null;
-}
+import { ICurrentIngrendient, IIngredient } from "../../types/types";
 
 const initialState: ICurrentIngrendient = {
   currentIngredient: null,

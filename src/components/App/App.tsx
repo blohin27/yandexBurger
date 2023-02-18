@@ -31,14 +31,6 @@ export const App = () => {
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
-
-  useEffect(() => {
-    //dispatch(setIngredientsAll(data ? data : null));
-  }, [data, dispatch]);
-
   const clearDetails = useCallback(() => {
     dispatch(setIngredientDetails(null));
   }, [dispatch]);
@@ -49,7 +41,6 @@ export const App = () => {
   }, [dispatch]);
 
   const onOpenOrder = useCallback(() => {
-    // @ts-ignore
     console.log("data.lenght", data);
     if (data && data.length > 0) {
       dispatch(setOpenOrder(true));

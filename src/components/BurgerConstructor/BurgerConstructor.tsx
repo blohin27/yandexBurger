@@ -6,7 +6,7 @@ import styles from "./styles.module.css";
 import classNames from "classnames";
 import { OrderDetails } from "../OrderDetails/OrderDetails";
 import { FC, useEffect } from "react";
-import { IIngredient } from "../../types/types";
+import { IBurgerConstructor, IIngredient } from "../../types/types";
 import { useIngredientsCategories } from "../../common/IngredientsHelper";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import {
@@ -16,11 +16,6 @@ import {
 import { useDrop } from "react-dnd";
 import nextId from "react-id-generator";
 import { ConstructorElementComponent } from "../ConstructorElement/ConstructorElement";
-
-interface IBurgerConstructor {
-  selectedItems?: IIngredient[];
-  openOrder: () => void;
-}
 
 export const BurgerConstructor: FC<IBurgerConstructor> = ({
   selectedItems = [],
@@ -65,11 +60,8 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
                 type={"top"}
                 extraClass={styles.backgroundItem}
                 isLocked={true}
-                // @ts-ignore
                 text={ingredientsBun[0].name + " (верх)"}
-                // @ts-ignore
                 price={ingredientsBun[0].price}
-                // @ts-ignore
                 thumbnail={ingredientsBun[0].image_large}
               />
             )}
@@ -99,11 +91,8 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
                 type={"bottom"}
                 extraClass={styles.backgroundItem}
                 isLocked={true}
-                // @ts-ignore
                 text={ingredientsBun[1].name + " (вниз)"}
-                // @ts-ignore
                 price={ingredientsBun[1].price}
-                // @ts-ignore
                 thumbnail={ingredientsBun[1].image_large}
               />
             )}

@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IIngredient } from "../../types/types";
-import update from "immutability-helper";
+import {
+  IIngredient,
+  IStateListIngredientsConstructor,
+} from "../../types/types";
+import { searchTotalPrice } from "../../common/helper";
 
-export interface IStateListIngredients {
-  ingredientsConstructor: IIngredient[] | [];
-  totalPrice: number;
-  ingredientsBun: [];
-}
-const initialState: IStateListIngredients = {
+const initialState: IStateListIngredientsConstructor = {
   ingredientsConstructor: [],
   ingredientsBun: [],
   totalPrice: 0,
@@ -17,51 +15,36 @@ const listIngredientsConstructorSlice = createSlice({
   name: "listIngredientsConstructor",
   initialState,
   reducers: {
-    setIngredientsAll: (
-      state: IStateListIngredients,
-      action: PayloadAction<IIngredient[] | null>
-    ) => {},
     totalPriceFunc: (state) => {
-      // @ts-ignore
-      const sum = state.ingredientsConstructor.reduce(
-        (accumulator: number, currentValue: IIngredient) =>
-          accumulator + currentValue.price,
-        0
-      );
-      const sumBUl = state.ingredientsBun.reduce(
-        (accumulator: number, currentValue: IIngredient) =>
-          accumulator + currentValue.price,
-        0
-      );
+      const sumIngredientsWithoutBun = searchTotalPrice(state.ingredientsBun);
+      const sumOnlyBun = searchTotalPrice(state.ingredientsConstructor);
 
-      state.totalPrice = sum + sumBUl;
+      state.totalPrice = sumIngredientsWithoutBun + sumOnlyBun;
     },
     addIngredientInConstructor: (
-      state: IStateListIngredients,
+      state: IStateListIngredientsConstructor,
       action: PayloadAction<IIngredient>
     ) => {
       if (action.payload.type === "bun" && state.ingredientsBun?.length === 0) {
-        // @ts-ignore
         state.ingredientsBun.push(action.payload);
-        // @ts-ignore
+
         state.ingredientsBun.push(action.payload);
       } else if (
         action.payload.type === "bun" &&
         state.ingredientsBun?.length !== 0
       ) {
         state.ingredientsBun = [];
-        // @ts-ignore
+
         state.ingredientsBun.push(action.payload);
-        // @ts-ignore
+
         state.ingredientsBun.push(action.payload);
       }
       if (action.payload.type !== "bun") {
-        // @ts-ignore
         state.ingredientsConstructor.push(action.payload);
       }
     },
     deleteIngredientInConstructor: (
-      state: IStateListIngredients,
+      state: IStateListIngredientsConstructor,
       action: PayloadAction<string | undefined>
     ) => {
       console.log("Удаление в ред", action.payload);
@@ -74,7 +57,7 @@ const listIngredientsConstructorSlice = createSlice({
     },
 
     changeIndex: (
-      state: IStateListIngredients,
+      state: IStateListIngredientsConstructor,
       action: PayloadAction<{ a: number; b: number }>
     ) => {
       const itemA = state.ingredientsConstructor[action.payload.a];
@@ -86,11 +69,9 @@ const listIngredientsConstructorSlice = createSlice({
 });
 
 export const {
-  setIngredientsAll,
   totalPriceFunc,
   addIngredientInConstructor,
   deleteIngredientInConstructor,
-
   changeIndex,
 } = listIngredientsConstructorSlice.actions;
 export default listIngredientsConstructorSlice.reducer;
