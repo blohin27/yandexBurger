@@ -1,19 +1,15 @@
 import styles from "./style.module.css";
-import {Button,} from "@ya.praktikum/react-developer-burger-ui-components";
+import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import Subtract from "../../images/Subtract.svg";
-import {FC} from "react";
+import { FC } from "react";
+import { IOrderDetails } from "../../types/types";
 
-interface IOrderDetails {
-  openOrder: () => void;
-  price: number
-}
-
-export const OrderDetails: FC<IOrderDetails> = ({openOrder, price}) => {
+export const OrderDetails: FC<IOrderDetails> = ({ openOrder, price }) => {
   return (
     <div className={styles.wrap}>
       <p className="text text_type_digits-medium mr-2">{price}</p>
       <div className={styles.icon}>
-        <img src={Subtract} alt={'Subtract'} />
+        <img src={Subtract} alt={"Subtract"} />
       </div>
       <div className={styles.button}>
         <Button

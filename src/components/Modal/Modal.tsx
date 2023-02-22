@@ -1,23 +1,16 @@
 import styles from "./styles.module.css";
 import classNames from "classnames";
-import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import React, {FC, PropsWithChildren, useCallback, useEffect} from "react";
-import {ModalOverlay} from "../ModalOverlay/ModalOverlay";
-
-interface IModal {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
-}
+import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+import React, { FC, PropsWithChildren, useCallback, useEffect } from "react";
+import { ModalOverlay } from "../ModalOverlay/ModalOverlay";
+import { IModal } from "../../types/types";
 
 export const Modal: FC<PropsWithChildren<IModal>> = ({
-                                                       open,
-                                                       onClose,
-                                                       title,
-                                                       children,
-                                                     }) => {
-
-
+  open,
+  onClose,
+  title,
+  children,
+}) => {
   const keydownHandler = useCallback((event: KeyboardEvent) => {
     if (event.key === "Escape") {
       onClose();
@@ -29,28 +22,29 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
 
     return () => {
       document.removeEventListener("keydown", keydownHandler);
-    }
-  }, [])
-
-  const stopPropagation = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation()
+    };
   }, []);
 
+  const stopPropagation = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+    },
+    []
+  );
+
   useEffect(() => {
-    const body = document.getElementsByTagName('body');
+    const body = document.getElementsByTagName("body");
 
     const bodyStyle = body[0]?.style;
 
     if (bodyStyle) {
       if (open) {
-
-        bodyStyle.overflow = 'hidden'
+        bodyStyle.overflow = "hidden";
       } else {
-        bodyStyle.overflow = 'auto'
+        bodyStyle.overflow = "auto";
       }
     }
-
-  }, [open])
+  }, [open]);
 
   if (!open) return null;
 
@@ -63,9 +57,7 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
             <CloseIcon type="primary" />
           </div>
         </div>
-        <div className={classNames(styles.content)}>
-          {children}
-        </div>
+        <div className={classNames(styles.content)}>{children}</div>
       </div>
       <ModalOverlay onClick={onClose} />
     </div>

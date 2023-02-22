@@ -1,12 +1,7 @@
 import styles from "./styles.module.css";
 import classNames from "classnames";
-import {FC} from "react";
-
-interface INavItem {
-  text: string;
-  icon: JSX.Element;
-  isActive: boolean;
-}
+import { FC } from "react";
+import { INavItem } from "../../types/types";
 
 export const NavItem: FC<INavItem> = (props) => {
   return (
