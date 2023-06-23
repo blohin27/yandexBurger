@@ -11,11 +11,14 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
   title,
   children,
 }) => {
-  const keydownHandler = useCallback((event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      onClose();
-    }
-  }, []);
+  const keydownHandler = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   useEffect(() => {
     document.addEventListener("keydown", keydownHandler);
@@ -23,7 +26,7 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
     return () => {
       document.removeEventListener("keydown", keydownHandler);
     };
-  }, []);
+  }, [keydownHandler]);
 
   const stopPropagation = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -34,7 +37,6 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
 
   useEffect(() => {
     const body = document.getElementsByTagName("body");
-
     const bodyStyle = body[0]?.style;
 
     if (bodyStyle) {

@@ -14,6 +14,10 @@ export const bodyRequestForOrder = (data: IStateListIngredientsConstructor) => {
   };
 };
 
+export const bodyUserProfileReset = (data: string) => {
+  return { email: data };
+};
+
 export const counterIngredients = (
   data: IStateListIngredientsConstructor,
   item: IIngredient

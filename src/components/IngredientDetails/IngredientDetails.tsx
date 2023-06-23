@@ -6,6 +6,15 @@ import { IIngredient, IIngredientDetailsComponent } from "../../types/types";
 export const IngredientDetails: FC<IIngredientDetailsComponent> = ({
   item,
 }) => {
+  if (!item) {
+    return (
+      <div className={styles.wrap}>
+        <div className={styles.structureIngredients}>
+          <div>Нет такого Элемента</div>;
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={styles.wrap}>
       <div className={styles.icon}>

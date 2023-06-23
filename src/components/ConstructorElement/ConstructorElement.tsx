@@ -9,7 +9,7 @@ import {
   changeIndex,
   deleteIngredientInConstructor,
 } from "../../services/reducers/listIngredientsConstructorSlice";
-import { useAppDispatch, useAppSelector } from "../../services/store/store";
+import { useAppDispatch } from "../../services/store/store";
 import styles from "./styles.module.css";
 import { useDrag, useDrop } from "react-dnd";
 import { DragItemType, IConstructorElementComponent } from "../../types/types";

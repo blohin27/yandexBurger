@@ -1,10 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { App } from "./components/App/App";
+import { App } from "./components";
 import { Provider } from "react-redux";
 import { store } from "./services/store/store";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { BrowserRouter } from "react-router-dom";
+import "react-notifications-component/dist/theme.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,7 +14,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     <DndProvider backend={HTML5Backend}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </DndProvider>
   </Provider>
 );

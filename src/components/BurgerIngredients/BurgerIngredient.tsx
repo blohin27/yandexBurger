@@ -30,9 +30,7 @@ export const BurgerIngredient: FC<IBurgerIngredient> = ({ items = [] }) => {
     },
     [scrollToActiveTab]
   );
-  useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
+  useEffect(() => {}, [dispatch]);
   return (
     <div className={styles.wrap}>
       <div className={classNames(styles.content)}>

@@ -1,0 +1,23 @@
+
+.appContent {
+    display: flex;
+    margin: 120px auto 0;
+    max-width: 1240px;
+    justify-content: flex-start;
+}
+.columnItem{
+    flex: 1 1 33%;
+
+    justify-content: flex-start;
+    text-align: left;
+}
+.columnItemCenter{
+    flex: 0 0 33%;
+    border: 2px solid red;
+}
+.buttonSave{
+    display: flex;
+    justify-content: flex-end;
+}
+
+
