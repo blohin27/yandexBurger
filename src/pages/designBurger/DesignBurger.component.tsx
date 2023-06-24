@@ -14,11 +14,20 @@ import { Modal } from "../../components/Modal/Modal";
 import { Order } from "../../components/Order/Order";
 import { IngredientDetails } from "../../components/IngredientDetails/IngredientDetails";
 import { Content } from "../../components";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { fetchData } from "../../services/reducers/listIngredientsSlice";
+import stateAppBehavior, {
+  setHeaderActive,
+} from "../../services/reducers/stateAppBehavior";
+import {
+  getUser,
+  refreshToken,
+} from "../../services/reducers/userProfileSlice";
 
 export const DesignBurger = () => {
   const location = useLocation();
+  const accessToken = useAppSelector((state) => state.userProfile.accessToken);
+  const navigate = useNavigate();
   const data = useAppSelector(
     (state) => state.listIngredientsSlice.ingredients
   );
@@ -53,6 +62,7 @@ export const DesignBurger = () => {
   }, [data, ingredientforModalByUpdate]);
 
   useEffect(() => {
+    dispatch(setHeaderActive("DesignBurger"));
     if (!!ingredientDetails) {
       sessionStorage.setItem("test", "1");
       window.history.replaceState(
@@ -76,17 +86,40 @@ export const DesignBurger = () => {
     dispatch(clearListIngredietnConstructor());
   }, [dispatch]);
 
-  const onOpenOrder = useCallback(() => {
-    if (data && data.length > 0) {
-      dispatch(setOpenOrder(true));
-
-      dispatch(createdOrderRequest(arrayIngredientsForCreatedOrder));
+  const availableOrder = useMemo(() => {
+    if (accessToken && !!localStorage.getItem("refreshToken")) {
+      if (data && data.length > 0) {
+        dispatch(setOpenOrder(true));
+        dispatch(createdOrderRequest(arrayIngredientsForCreatedOrder));
+      }
+    } else {
+      navigate("/login", { state: { url: location.pathname } });
     }
-  }, [arrayIngredientsForCreatedOrder, data, dispatch]);
+
+    return true;
+  }, []);
+
+  const onOpenOrder = useCallback(() => {
+    if (!accessToken) {
+      if (!!localStorage.getItem("refreshToken")) {
+        dispatch(refreshToken());
+      } else {
+        navigate("/login", { state: { url: location.pathname } });
+      }
+    } else {
+      dispatch(getUser(accessToken));
+    }
+  }, [
+    accessToken,
+    arrayIngredientsForCreatedOrder,
+    data,
+    dispatch,
+    location.pathname,
+    navigate,
+  ]);
 
   return (
     <>
-      <AppHeader isActive={isActiveEnum.DesignBurger} />
       <button>{`Вот ингредиент${ingredientDetails?._id ?? "ПУСТО"}`}</button>
       <Content>
         <BurgerIngredient items={data ?? undefined} />

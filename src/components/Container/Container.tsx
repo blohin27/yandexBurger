@@ -13,6 +13,7 @@ import {
   getUser,
   refreshToken,
 } from "../../services/reducers/userProfileSlice";
+import { AppHeader } from "../AppHeader";
 
 export const Container: FC<PropsWithChildren> = (props) => {
   const data = useAppSelector((state) => state);
@@ -32,8 +33,11 @@ export const Container: FC<PropsWithChildren> = (props) => {
   }, [accessToken]);
 
   return (
-    <div className={styles.app} style={{ position: "relative" }}>
-      {props.children}
-    </div>
+    <>
+      <AppHeader />
+      <div className={styles.app} style={{ position: "relative" }}>
+        {props.children}
+      </div>
+    </>
   );
 };

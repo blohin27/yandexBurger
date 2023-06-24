@@ -13,6 +13,7 @@ import {
   accessResetPasswordStepTwo,
   authLogin,
 } from "../../services/reducers/userProfileSlice";
+import { setHeaderActive } from "../../services/reducers/stateAppBehavior";
 
 export const Login: FC = () => {
   const [email, setEmail] = useState("");
@@ -29,6 +30,7 @@ export const Login: FC = () => {
   };
 
   useEffect(() => {
+    dispatch(setHeaderActive("PersonalCabinet"));
     dispatch(accessResetPasswordStepTwo());
     if (!!accessToken) {
       navigate("/profile");
@@ -37,62 +39,61 @@ export const Login: FC = () => {
 
   return (
     <div style={{ height: "100vh" }}>
-      <AppHeader isActive={isActiveEnum.PersonalCabinet} />
       <Content style={{ height: "88%" }}>
         <div className={style.wrapCenter}>
           <div className="mb-6">
             <p className="text text_type_main-medium">Вход</p>
           </div>
-          <div className="mb-6">
-            <Input
-              height={64}
-              type={"text"}
-              placeholder={"E-mail"}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              value={email}
-              error={false}
-              errorText={"Ошибка"}
-              size={"default"}
-              extraClass="ml-1"
-            />
-          </div>
-          <div className="mb-6">
-            <Input
-              height={64}
-              type={"text"}
-              placeholder={"Пароль"}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-              value={password}
-              icon={"HideIcon"}
-              error={false}
-              errorText={"Ошибка"}
-              size={"default"}
-              extraClass="ml-1"
-            />
-          </div>
-          <div className="mb-20">
-            <Button
-              htmlType="button"
-              type="primary"
-              size="medium"
-              onClick={() => {
-                dispatch(
-                  authLogin({
-                    email: email,
-                    password: password,
-                    setEmptyFieldLogin,
-                  })
-                );
-              }}
-            >
-              Войти
-            </Button>
-          </div>
-          <div className={classNames(style.buttonHref, "mb-6")}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              dispatch(
+                authLogin({
+                  email: email,
+                  password: password,
+                  setEmptyFieldLogin,
+                })
+              );
+            }}
+          >
+            <div className="mb-6">
+              <Input
+                height={64}
+                type={"text"}
+                placeholder={"E-mail"}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                value={email}
+                error={false}
+                errorText={"Ошибка"}
+                size={"default"}
+                extraClass="ml-1"
+              />
+            </div>
+            <div className="mb-6">
+              <Input
+                height={64}
+                type={"password"}
+                placeholder={"Пароль"}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                value={password}
+                icon={"HideIcon"}
+                error={false}
+                errorText={"Ошибка"}
+                size={"default"}
+                extraClass="ml-1"
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Button htmlType="submit" type="primary" size="medium">
+                Войти
+              </Button>
+            </div>
+          </form>
+          <div className={classNames(style.buttonHref, "mb-6 mt-20")}>
             <div className="text text_type_main-default text_color_inactive m-2">
               Вы новый пользователь?
             </div>

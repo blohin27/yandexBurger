@@ -8,8 +8,9 @@ import styles from "./styles.module.css";
 import classNames from "classnames";
 import { NavItem } from "../NavItem/NavItem";
 import { Link } from "react-router-dom";
-import { FC } from "react";
-import { useAppSelector } from "../../services/store/store";
+import { FC, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../services/store/store";
+import { useLocation, useNavigate } from "react-router";
 
 interface Props {
   isActive?: isActiveEnum;
@@ -23,6 +24,10 @@ export enum isActiveEnum {
 
 export const AppHeader: FC<Props> = ({ isActive }) => {
   const name = useAppSelector((state) => state.userProfile.name);
+  const headerActive = useAppSelector(
+    (state) => state.stateAppBehaviorSlice.headerActive
+  );
+
   return (
     <div className={styles.wrap}>
       <div className={classNames(styles.contentHeader)}>
@@ -33,13 +38,13 @@ export const AppHeader: FC<Props> = ({ isActive }) => {
               icon={
                 <BurgerIcon
                   type={
-                    isActive === isActiveEnum.DesignBurger
+                    headerActive === isActiveEnum.DesignBurger
                       ? "primary"
                       : "secondary"
                   }
                 />
               }
-              isActive={isActive === isActiveEnum.DesignBurger}
+              isActive={headerActive === isActiveEnum.DesignBurger}
             />
           </Link>
           <Link to={"/order"}>
@@ -48,13 +53,13 @@ export const AppHeader: FC<Props> = ({ isActive }) => {
               icon={
                 <ListIcon
                   type={
-                    isActive === isActiveEnum.OrderFeed
+                    headerActive === isActiveEnum.OrderFeed
                       ? "primary"
                       : "secondary"
                   }
                 />
               }
-              isActive={isActive === isActiveEnum.OrderFeed}
+              isActive={headerActive === isActiveEnum.OrderFeed}
             />
           </Link>
         </div>
@@ -70,13 +75,13 @@ export const AppHeader: FC<Props> = ({ isActive }) => {
               icon={
                 <ProfileIcon
                   type={
-                    isActive === isActiveEnum.PersonalCabinet
+                    headerActive === isActiveEnum.PersonalCabinet
                       ? "primary"
                       : "secondary"
                   }
                 />
               }
-              isActive={isActive === isActiveEnum.PersonalCabinet}
+              isActive={headerActive === isActiveEnum.PersonalCabinet}
             />
           </Link>
         </div>

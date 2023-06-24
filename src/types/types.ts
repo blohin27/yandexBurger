@@ -97,6 +97,10 @@ export interface ICreatedOrder {
   isFetchError?: boolean;
 }
 
+export interface IStateAppBehavior {
+  headerActive?: string;
+}
+
 export interface IUserProfile {
   email?: string;
   name?: string;

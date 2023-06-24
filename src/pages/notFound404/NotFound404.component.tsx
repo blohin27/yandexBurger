@@ -17,7 +17,6 @@ export const NotFound404: FC<Props> = () => {
 
   return (
     <div>
-      <AppHeader isActive={isActiveEnum.PersonalCabinet} />
       <div className={styles.appContent}>
         <div className={styles.item404}>404</div>
         <div className={styles.item404}>Страница не найдена</div>

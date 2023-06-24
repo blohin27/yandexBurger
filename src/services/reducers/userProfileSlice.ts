@@ -260,7 +260,24 @@ const userProfileSlice = createSlice({
       state.email = action.payload.user.email;
       localStorage.setItem("refreshToken", action.payload.refreshToken);
       state.accessToken = action.payload.accessToken;
+      Store.addNotification({
+        title: "Пользователь успешно создан",
+        message: "",
+        type: "success",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
     },
+    [createUser.rejected.toString()]: (
+      state: IUserProfile,
+      action: PayloadAction<IResponseCreateUser>
+    ) => {},
     [forgotPassword.fulfilled.toString()]: (state: IUserProfile) => {
       state.accessResetPasswordStepTwo = 1;
     },

@@ -23,7 +23,10 @@ export const App = () => {
       <ReactNotifications />
       <Routes>
         <Route path={"/"} element={<DesignBurger />} />
-        <Route path={"/order"} element={<OrderFeed />} />
+        <Route
+          path={"/order"}
+          element={<AuthorizedRouteElement element={<OrderFeed />} />}
+        />
         <Route
           path={"/profile/"}
           element={<AuthorizedRouteElement element={<Profile />} />}

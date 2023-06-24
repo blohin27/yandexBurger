@@ -11,6 +11,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { Store } from "react-notifications-component";
 import classNames from "classnames";
+import { setHeaderActive } from "../../services/reducers/stateAppBehavior";
 
 export const Profile = () => {
   const dispatch = useAppDispatch();
@@ -27,6 +28,10 @@ export const Profile = () => {
       return true;
     }
   }, [email, emailStore, name, nameStore, password?.length]);
+
+  useEffect(() => {
+    dispatch(setHeaderActive("PersonalCabinet"));
+  }, []);
 
   useEffect(() => {
     setEmail(emailStore!);
@@ -78,78 +83,121 @@ export const Profile = () => {
       });
     }
   };
+  const onCancel = () => {
+    setName(nameStore);
+    setEmail(emailStore);
+  };
 
   const CenterProfile = () => {
     return (
-      <div style={{ border: "2px solid red" }}>
+      <div>
         {location.pathname === "/profile/order" && <Outlet />}
         {location.pathname === "/profile" && (
           <div className={styles.columnItem}>
-            <div className="mb-6">
-              <Input
-                type={"text"}
-                placeholder={"Имя"}
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-                value={name ?? ""}
-                error={false}
-                errorText={"Ошибка"}
-                size={"default"}
-                extraClass="ml-1"
-              />
-            </div>
-            <div className="mb-6">
-              <Input
-                type={"text"}
-                placeholder={"Логин"}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                value={email ?? ""}
-                error={false}
-                errorText={"Ошибка"}
-                size={"default"}
-                extraClass="ml-1"
-              />
-            </div>
-            <div className="mb-6">
-              <Input
-                type={"password"}
-                placeholder={"Пароль"}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                value={password ?? ""}
-                error={false}
-                errorText={"Ошибка"}
-                size={"default"}
-                extraClass="ml-1"
-              />
-            </div>
-            <div className={styles.buttonSave}>
-              {isChanges && (
-                <Button
-                  htmlType="button"
-                  type="secondary"
-                  size="medium"
-                  onClick={() => {
-                    setName(nameStore);
-                    setEmail(emailStore);
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                const objReq: {
+                  name?: string;
+                  email?: string;
+                  password?: string;
+                } = {
+                  name: "",
+                  email: "",
+                  password: "",
+                };
+                if (name !== nameStore) {
+                  objReq.name = name;
+                } else delete objReq.name;
+                if (email !== emailStore) {
+                  objReq.email = email;
+                } else delete objReq.email;
+                if (password?.length) {
+                  objReq.password = password;
+                } else delete objReq.password;
+
+                if (Object.keys(objReq).length !== 0) {
+                  dispatch(
+                    editUser({ ...objReq, accessToken: accessToken })
+                  ).then(() => {
+                    setPassword("");
+                    Store.addNotification({
+                      title: "Изменения успешно добавлены",
+                      message: "",
+                      type: "success",
+                      insert: "top",
+                      container: "bottom-center",
+                      animationIn: ["animate__animated", "animate__fadeIn"],
+                      animationOut: ["animate__animated", "animate__fadeOut"],
+                      dismiss: {
+                        duration: 2000,
+                        onScreen: false,
+                      },
+                    });
+                  });
+                }
+              }}
+            >
+              <div className="mb-6">
+                <Input
+                  type={"text"}
+                  placeholder={"Имя"}
+                  onChange={(e) => {
+                    setName(e.target.value);
                   }}
-                >
-                  Отмена
-                </Button>
-              )}
-              <Button
-                htmlType="button"
-                type="primary"
-                size="medium"
-                onClick={onClickButton}
-              >
-                Сохранить
-              </Button>
-            </div>
+                  value={name ?? ""}
+                  error={false}
+                  errorText={"Ошибка"}
+                  size={"default"}
+                  extraClass="ml-1"
+                />
+              </div>
+              <div className="mb-6">
+                <Input
+                  type={"text"}
+                  placeholder={"Логин"}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  value={email ?? ""}
+                  error={false}
+                  errorText={"Ошибка"}
+                  size={"default"}
+                  extraClass="ml-1"
+                />
+              </div>
+              <div className="mb-6">
+                <Input
+                  type={"password"}
+                  placeholder={"Пароль"}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  value={password ?? ""}
+                  error={false}
+                  errorText={"Ошибка"}
+                  size={"default"}
+                  extraClass="ml-1"
+                />
+              </div>
+              <div className={styles.buttonSave}>
+                {isChanges && (
+                  <>
+                    <Button
+                      htmlType="button"
+                      size="medium"
+                      type={"secondary"}
+                      onClick={onCancel}
+                    >
+                      Отмена
+                    </Button>
+                    <Button htmlType="submit" type="primary" size="medium">
+                      Сохранить
+                    </Button>
+                  </>
+                )}
+              </div>
+            </form>
           </div>
         )}
       </div>
@@ -158,8 +206,6 @@ export const Profile = () => {
 
   return (
     <div>
-      <AppHeader isActive={isActiveEnum.PersonalCabinet} />
-
       <div className={styles.appContent}>
         <div className={styles.columnItem}>
           <div className={"p-6 button"}>

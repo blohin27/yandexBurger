@@ -32,7 +32,6 @@ export const Ingredients = () => {
 
   return (
     <div>
-      <AppHeader />
       <IngredientDetails item={itemIngredient?.[0]} />
     </div>
   );
