@@ -1,76 +1,60 @@
-import React, { useCallback } from "react";
-
-import { AppHeader } from "../AppHeader/AppHeader";
-import { BurgerIngredient } from "../BurgerIngredients/BurgerIngredient";
-import { BurgerConstructor } from "../BurgerConstructor/BurgerConstructor";
-import styles from "./styles.module.css";
-import { Modal } from "../Modal/Modal";
-import { IngredientDetails } from "../IngredientDetails/IngredientDetails";
-import { Order } from "../Order/Order";
-import { useAppDispatch, useAppSelector } from "../../services/store/store";
-import { setIngredientDetails } from "../../services/reducers/currentIngredientDetailsSlice";
+import React from "react";
+import { Route, Routes } from "react-router";
+import { DesignBurger } from "../../pages/designBurger";
+import { Profile } from "../../pages/profile";
+import { OrderFeed } from "../../pages/orderFeed/OrderFeed.component";
+import { Container } from "../Container/Container";
 import {
-  clearOrder,
-  createdOrderRequest,
-  setOpenOrder,
-} from "../../services/reducers/createdOrderSlice";
-import { clearListIngredietnConstructor } from "../../services/reducers/listIngredientsConstructorSlice";
+  ForgotPassword,
+  Ingredients,
+  Login,
+  NotFound404,
+  OrderProfile,
+  Register,
+  ResetPassword,
+} from "../../pages";
+import { AuthorizedRouteElement } from "../AuthorizedRouteElement";
+import { NotAuthorizedRouteElement } from "../NotAuthorizedRouteElement";
+import { ReactNotifications } from "react-notifications-component";
 
 export const App = () => {
-  const data = useAppSelector(
-    (state) => state.listIngredientsSlice.ingredients
-  );
-  const arrayIngredientsForCreatedOrder = useAppSelector(
-    (state) => state.listIngredientsConstructorSlice
-  );
-  const ingredientDetails = useAppSelector(
-    (state) => state.currentIngredientDetailsSlice.currentIngredient
-  );
-  const orderDetails = useAppSelector((state) => state.createdOrderSlice);
-
-  const dispatch = useAppDispatch();
-
-  const clearDetails = useCallback(() => {
-    dispatch(setIngredientDetails(null));
-  }, [dispatch]);
-
-  const onCloseOrder = useCallback(() => {
-    dispatch(setOpenOrder(false));
-    dispatch(clearOrder());
-    dispatch(clearListIngredietnConstructor());
-  }, [dispatch]);
-
-  const onOpenOrder = useCallback(() => {
-    if (data && data.length > 0) {
-      dispatch(setOpenOrder(true));
-
-      dispatch(createdOrderRequest(arrayIngredientsForCreatedOrder));
-    }
-  }, [arrayIngredientsForCreatedOrder, data, dispatch]);
-
   return (
-    <div className={styles.app}>
-      <AppHeader />
-
-      <div className={styles.appContent}>
-        <BurgerIngredient items={data ?? undefined} />
-        <BurgerConstructor
-          selectedItems={data ?? undefined}
-          openOrder={onOpenOrder}
+    <Container>
+      <ReactNotifications />
+      <Routes>
+        <Route path={"/"} element={<DesignBurger />} />
+        <Route
+          path={"/order"}
+          element={<AuthorizedRouteElement element={<OrderFeed />} />}
         />
-      </div>
-
-      <Modal open={orderDetails.openOrder} onClose={onCloseOrder}>
-        <Order />
-      </Modal>
-
-      <Modal
-        open={!!ingredientDetails}
-        title={"Детали ингредиента"}
-        onClose={clearDetails}
-      >
-        <IngredientDetails item={ingredientDetails!} />
-      </Modal>
-    </div>
+        <Route
+          path={"/profile/"}
+          element={<AuthorizedRouteElement element={<Profile />} />}
+        >
+          <Route
+            path={"order"}
+            element={<AuthorizedRouteElement element={<OrderProfile />} />}
+          />
+        </Route>
+        <Route
+          path={"/register"}
+          element={<NotAuthorizedRouteElement element={<Register />} />}
+        />
+        <Route
+          path={"/forgot-password"}
+          element={<NotAuthorizedRouteElement element={<ForgotPassword />} />}
+        />
+        <Route
+          path={"/login"}
+          element={<NotAuthorizedRouteElement element={<Login />} />}
+        />
+        <Route
+          path={"/reset-password"}
+          element={<NotAuthorizedRouteElement element={<ResetPassword />} />}
+        />{" "}
+        <Route path={"/ingredients/:id"} element={<Ingredients />} />
+        <Route path="*" element={<NotFound404 />} />
+      </Routes>
+    </Container>
   );
 };

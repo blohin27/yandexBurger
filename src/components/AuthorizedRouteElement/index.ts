@@ -1,0 +1,1 @@
+export * from "./AuthorizedRouteElement.component";

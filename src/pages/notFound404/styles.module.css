@@ -1,0 +1,25 @@
+
+.appContent {
+    display: flex;
+    margin: 120px auto 0;
+    max-width: 1240px;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+.columnItem{
+    flex: 1 1 33%;
+    justify-content: flex-start;
+    text-align: left;
+}
+.item404{
+    color: #F2F2F3;
+    font-size: 60px;
+    font-weight: 700;
+
+}
+.columnItemCenter{
+    flex: 0 0 33%;
+}
+
+

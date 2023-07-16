@@ -57,7 +57,7 @@ export interface IIngredientTypes {
 }
 
 export interface IIngredientDetailsComponent {
-  item: IIngredient;
+  item?: IIngredient;
 }
 
 export interface IStateListIngredients {
@@ -95,6 +95,36 @@ export interface ICreatedOrder {
   OrderDetails: TypeOrderDetails | null;
   openOrder: boolean;
   isFetchError?: boolean;
+}
+
+export interface IStateAppBehavior {
+  headerActive?: string;
+}
+
+export interface IUserProfile {
+  email?: string;
+  name?: string;
+  password?: string;
+  accessToken?: string;
+  success?: boolean;
+  accessResetPasswordStepTwo?: 0 | 1 | 2;
+  isLoading?: "pending" | "fulfilled" | "reject";
+}
+
+export interface IResponseCreateUser {
+  success: boolean;
+  user: IUserProfile;
+  accessToken: string;
+  refreshToken: string;
+}
+export interface IResponseRefreshToken {
+  success: boolean;
+  accessToken: string;
+  refreshToken: string;
+}
+export interface IResponseUpdateuser {
+  success: boolean;
+  user: IUserProfile;
 }
 
 export interface ICurrentIngrendient {

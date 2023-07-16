@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICurrentIngrendient, IIngredient } from "../../types/types";
+import { LOGOUT_URL } from "../../const/const";
 
 const initialState: ICurrentIngrendient = {
   currentIngredient: null,

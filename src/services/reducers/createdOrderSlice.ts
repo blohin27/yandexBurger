@@ -52,14 +52,12 @@ const createdOrderSlice = createSlice({
   },
   extraReducers: {
     [createdOrderRequest.pending.toString()]: () => {},
-
     [createdOrderRequest.fulfilled.toString()]: (
       state: ICreatedOrder,
       action: PayloadAction<TypeOrderDetails>
     ) => {
       state.OrderDetails = action.payload;
     },
-
     [createdOrderRequest.rejected.toString()]: (
       state: ICreatedOrder,
       action: PayloadAction<TypeOrderDetails>

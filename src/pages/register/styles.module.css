@@ -1,0 +1,27 @@
+.app {
+    margin: 0 auto;
+
+}
+
+.appContent {
+    display: flex;
+    margin: 0 auto;
+    max-width: 1240px;
+}
+.wrapCenter{
+    margin: auto;
+    width: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.buttonHref{
+    display: flex;
+    flex-direction: row;
+    align-items: center
+}
+.btn_reg{
+    display: flex;
+    justify-content: center;
+}
