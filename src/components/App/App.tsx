@@ -17,7 +17,7 @@ import { AuthorizedRouteElement } from "../AuthorizedRouteElement";
 import { NotAuthorizedRouteElement } from "../NotAuthorizedRouteElement";
 import { ReactNotifications } from "react-notifications-component";
 
-export const App = () => {
+export const App: React.FC = () => {
   return (
     <Container>
       <ReactNotifications />

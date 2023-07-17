@@ -4,7 +4,6 @@ import { Tabs } from "../Tabs/Tabs";
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { IngredientsHeap } from "../IngredientsHeap/IngredientsHeap";
 import { IBurgerIngredient, IIngredient } from "../../types/types";
-import { fetchData } from "../../services/reducers/listIngredientsSlice";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 
 export const BurgerIngredient: FC<IBurgerIngredient> = ({ items = [] }) => {
@@ -46,8 +45,7 @@ export const BurgerIngredient: FC<IBurgerIngredient> = ({ items = [] }) => {
           />
         ) : (
           <div
-            className="text text_type_main-large mt-10 mb-5"
-            style={{ color: "red" }}
+            className={`text text_type_main-large mt-10 mb-5 ${styles.colorRed}`}
           >
             Ошибка при получении ингредиентов
           </div>

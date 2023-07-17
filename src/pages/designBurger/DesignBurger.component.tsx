@@ -7,7 +7,6 @@ import {
   setOpenOrder,
 } from "../../services/reducers/createdOrderSlice";
 import { clearListIngredietnConstructor } from "../../services/reducers/listIngredientsConstructorSlice";
-import { AppHeader, isActiveEnum } from "../../components/AppHeader/AppHeader";
 import { BurgerIngredient } from "../../components/BurgerIngredients/BurgerIngredient";
 import { BurgerConstructor } from "../../components/BurgerConstructor/BurgerConstructor";
 import { Modal } from "../../components/Modal/Modal";
@@ -43,6 +42,7 @@ export const DesignBurger = () => {
     [data, location.state?.id]
   );
   const dispatch = useAppDispatch();
+  console.log("!!!!!!!!!!!!!!!!!!!!ingredientDetails!", ingredientDetails);
 
   useEffect(() => {
     dispatch(fetchData());
@@ -59,7 +59,7 @@ export const DesignBurger = () => {
         `/ingredients/${location?.state?.id}`
       );
     }
-  }, [data, ingredientforModalByUpdate]);
+  }, [data, dispatch, ingredientforModalByUpdate, location?.state?.id]);
 
   useEffect(() => {
     dispatch(setHeaderActive("DesignBurger"));
@@ -71,14 +71,14 @@ export const DesignBurger = () => {
         `/ingredients/${ingredientDetails?._id}`
       );
     }
-  }, [ingredientDetails]);
+  }, [dispatch, ingredientDetails]);
 
   const clearDetails = useCallback(() => {
     window.history.replaceState(null, "", `/`);
     dispatch(setIngredientDetails(null));
 
     sessionStorage.removeItem("test");
-  }, []);
+  }, [dispatch]);
 
   const onCloseOrder = useCallback(() => {
     dispatch(setOpenOrder(false));
@@ -86,37 +86,19 @@ export const DesignBurger = () => {
     dispatch(clearListIngredietnConstructor());
   }, [dispatch]);
 
-  const availableOrder = useMemo(() => {
-    if (accessToken && !!localStorage.getItem("refreshToken")) {
-      if (data && data.length > 0) {
-        dispatch(setOpenOrder(true));
-        dispatch(createdOrderRequest(arrayIngredientsForCreatedOrder));
-      }
-    } else {
-      navigate("/login", { state: { url: location.pathname } });
-    }
-
-    return true;
-  }, []);
-
   const onOpenOrder = useCallback(() => {
     if (!accessToken) {
-      if (!!localStorage.getItem("refreshToken")) {
+      if (Boolean(localStorage.getItem("refreshToken"))) {
         dispatch(refreshToken());
       } else {
         navigate("/login", { state: { url: location.pathname } });
       }
     } else {
-      dispatch(getUser(accessToken));
+      dispatch(setOpenOrder(true));
+
+      dispatch(createdOrderRequest(arrayIngredientsForCreatedOrder));
     }
-  }, [
-    accessToken,
-    arrayIngredientsForCreatedOrder,
-    data,
-    dispatch,
-    location.pathname,
-    navigate,
-  ]);
+  }, [accessToken, dispatch, location.pathname, navigate]);
 
   return (
     <>

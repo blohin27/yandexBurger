@@ -24,7 +24,7 @@ export const Container: FC<PropsWithChildren> = (props) => {
 
   useEffect(() => {
     if (!accessToken) {
-      if (!!localStorage.getItem("refreshToken")) {
+      if (Boolean(localStorage.getItem("refreshToken"))) {
         dispatch(refreshToken());
       }
     } else {
@@ -35,9 +35,7 @@ export const Container: FC<PropsWithChildren> = (props) => {
   return (
     <>
       <AppHeader />
-      <div className={styles.app} style={{ position: "relative" }}>
-        {props.children}
-      </div>
+      <div className={styles.app}>{props.children}</div>
     </>
   );
 };

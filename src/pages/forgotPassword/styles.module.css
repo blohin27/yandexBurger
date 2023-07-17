@@ -25,3 +25,16 @@
     display: flex;
     justify-content: center;
 }
+
+.forgotWrap {
+    height: 100vh;
+    margin-top: 100px;
+}
+
+.content{
+    height: 88%
+}
+
+.button{
+    padding: 0;
+}

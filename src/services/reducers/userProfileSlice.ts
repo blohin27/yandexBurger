@@ -14,7 +14,7 @@ import { bodyUserProfileReset } from "../../common/helper";
 import {
   IResponseCreateUser,
   IResponseRefreshToken,
-  IResponseUpdateuser,
+  IResponseUpdateUser,
   IUserProfile,
 } from "../../types/types";
 import { Store } from "react-notifications-component";
@@ -92,7 +92,7 @@ export const editUser = createAsyncThunk(
         body: JSON.stringify(objReq),
       });
       if (response.status === 200) {
-        const data: IResponseUpdateuser = await response.json();
+        const data: IResponseUpdateUser = await response.json();
         return data;
       } else {
         throw new Error();
@@ -115,7 +115,7 @@ export const getUser = createAsyncThunk(
         },
       });
       if (response.status === 200) {
-        const data: IResponseUpdateuser = await response.json();
+        const data: IResponseUpdateUser = await response.json();
         return data;
       } else {
         throw new Error();
@@ -321,7 +321,7 @@ const userProfileSlice = createSlice({
     },
     [getUser.fulfilled.toString()]: (
       state: IUserProfile,
-      action: PayloadAction<IResponseUpdateuser>
+      action: PayloadAction<IResponseUpdateUser>
     ) => {
       state.name = action.payload.user.name;
       state.email = action.payload.user.email;
@@ -331,7 +331,7 @@ const userProfileSlice = createSlice({
     },
     [editUser.fulfilled.toString()]: (
       state: IUserProfile,
-      action: PayloadAction<IResponseUpdateuser>
+      action: PayloadAction<IResponseUpdateUser>
     ) => {
       state.name = action.payload.user.name;
       state.email = action.payload.user.email;

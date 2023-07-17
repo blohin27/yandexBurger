@@ -54,10 +54,7 @@ export const IngredientItem: FC<IIngredientItemComponent> = ({ item }) => {
           </div>
           <CurrencyIcon type="primary" />
         </div>
-        <div
-          style={{ textAlign: "center" }}
-          className={classNames("mt-2", styles.name)}
-        >
+        <div className={classNames("mt-2", styles.name, styles.text)}>
           <p className="text text_type_main-default">{item.name}</p>
         </div>
       </div>

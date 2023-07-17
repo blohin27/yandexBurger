@@ -15,7 +15,7 @@ export const NotAuthorizedRouteElement: FC<Props> = ({ element }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const accessToken = useAppSelector((state) => state.userProfile.accessToken);
-  const refreshTokenBoolean = !!localStorage.getItem("refreshToken");
+  const refreshTokenBoolean = Boolean(localStorage.getItem("refreshToken"));
   const location = useLocation();
 
   useEffect(() => {

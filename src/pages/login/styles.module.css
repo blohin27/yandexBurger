@@ -8,7 +8,8 @@
     margin: 0 auto;
     max-width: 1240px;
 }
-.wrapCenter{
+
+.wrapCenter {
     margin: auto;
     width: 480px;
     display: flex;
@@ -16,14 +17,37 @@
     justify-content: center;
     align-items: center;
 }
-.buttonHref{
+
+.buttonHref {
     display: flex;
     flex-direction: row;
     align-items: center
 }
-.btn_item{
+
+.btn_item {
     display: flex;
 
-justify-content: center;
+    justify-content: center;
 
+}
+
+.loginWrap {
+    height: 100vh;
+    margin-top: 100px;
+}
+
+.content {
+    height: 88%
+}
+
+.button {
+    padding: 0;
+    color: #4c4cff;
+
+}
+
+.otherButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }

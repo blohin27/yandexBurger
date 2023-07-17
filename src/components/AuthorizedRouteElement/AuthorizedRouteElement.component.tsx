@@ -23,7 +23,7 @@ export const AuthorizedRouteElement: FC<Props> = ({ element }) => {
   useEffect(() => {
     console.log("AuthorizedRouteElement 1  pathname ", location.pathname);
     if (!accessToken) {
-      if (!!localStorage.getItem("refreshToken")) {
+      if (Boolean(localStorage.getItem("refreshToken"))) {
         dispatch(refreshToken());
       } else {
         console.log(

@@ -122,7 +122,7 @@ export interface IResponseRefreshToken {
   accessToken: string;
   refreshToken: string;
 }
-export interface IResponseUpdateuser {
+export interface IResponseUpdateUser {
   success: boolean;
   user: IUserProfile;
 }
