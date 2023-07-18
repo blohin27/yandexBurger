@@ -102,7 +102,6 @@ export const DesignBurger = () => {
 
   return (
     <>
-      <button>{`Вот ингредиент${ingredientDetails?._id ?? "ПУСТО"}`}</button>
       <Content>
         <BurgerIngredient items={data ?? undefined} />
         <BurgerConstructor
