@@ -19,15 +19,10 @@ export const NotAuthorizedRouteElement: FC<Props> = ({ element }) => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("NotAuthorizedRouteElement 3 state ", location.state);
     if (refreshTokenBoolean) {
       if (location.state?.url) {
         navigate(`${location.state?.url}`);
       } else {
-        console.log(
-          "NotAuthorizedRouteElement 4 после авторизации  ",
-          location.state
-        );
         navigate("/profile");
       }
     }

@@ -25,7 +25,6 @@ export const Ingredients = () => {
   useEffect(() => {
     if (sessionStorage.getItem("test") === "1") {
       navigate("/", { state: { id: params.id } });
-      console.log("Перенаправление произошло на страницу /", params.id);
     }
     dispatch(fetchData());
   }, [dispatch]);

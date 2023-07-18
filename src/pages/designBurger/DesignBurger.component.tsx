@@ -42,7 +42,6 @@ export const DesignBurger = () => {
     [data, location.state?.id]
   );
   const dispatch = useAppDispatch();
-  console.log("!!!!!!!!!!!!!!!!!!!!ingredientDetails!", ingredientDetails);
 
   useEffect(() => {
     dispatch(fetchData());

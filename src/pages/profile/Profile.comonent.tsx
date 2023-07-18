@@ -40,7 +40,6 @@ export const Profile = () => {
 
   const onExit = () => {
     dispatch(logoutApp());
-    console.log("!!!!!!!!!!!!!!!!!!!!!");
     navigate("/login");
   };
 
