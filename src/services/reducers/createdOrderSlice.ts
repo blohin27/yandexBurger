@@ -2,11 +2,21 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CREATED_ORDER_URL } from "../../const/const";
 import { bodyRequestForOrder } from "../../common/helper";
 
-import {
-  ICreatedOrder,
-  IStateListIngredientsConstructor,
-  TypeOrderDetails,
-} from "../../types/types";
+import { IStateListIngredientsConstructor } from "../../types/types";
+
+type TypeOrder = { number: number };
+
+type TypeOrderDetails = {
+  name: string;
+  order: TypeOrder;
+  success: boolean;
+};
+
+interface ICreatedOrder {
+  OrderDetails: TypeOrderDetails | null;
+  openOrder: boolean;
+  isFetchError?: boolean;
+}
 
 const initialState: ICreatedOrder = {
   OrderDetails: null,

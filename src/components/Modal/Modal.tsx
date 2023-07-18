@@ -3,7 +3,12 @@ import classNames from "classnames";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import React, { FC, PropsWithChildren, useCallback, useEffect } from "react";
 import { ModalOverlay } from "../ModalOverlay/ModalOverlay";
-import { IModal } from "../../types/types";
+
+export interface IModal {
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+}
 
 export const Modal: FC<PropsWithChildren<IModal>> = ({
   open,

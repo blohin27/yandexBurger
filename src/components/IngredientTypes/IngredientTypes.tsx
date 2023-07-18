@@ -2,7 +2,13 @@ import styles from "./styles.module.css";
 import classNames from "classnames";
 import { IngredientItem } from "../IngredientItem/IngredientItem";
 import { FC } from "react";
-import { IIngredientTypes } from "../../types/types";
+import { IIngredient } from "../../types/types";
+
+export interface IIngredientTypes {
+  id: string;
+  data: IIngredient[];
+  text: string;
+}
 
 export const IngredientTypes: FC<IIngredientTypes> = ({
   text,

@@ -11,13 +11,35 @@ import {
 } from "../../const/const";
 import { bodyUserProfileReset } from "../../common/helper";
 
-import {
-  IResponseCreateUser,
-  IResponseRefreshToken,
-  IResponseUpdateUser,
-  IUserProfile,
-} from "../../types/types";
 import { Store } from "react-notifications-component";
+
+interface IResponseUpdateUser {
+  success: boolean;
+  user: IUserProfile;
+}
+
+interface IResponseRefreshToken {
+  success: boolean;
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface IResponseCreateUser {
+  success: boolean;
+  user: IUserProfile;
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface IUserProfile {
+  email?: string;
+  name?: string;
+  password?: string;
+  accessToken?: string;
+  success?: boolean;
+  accessResetPasswordStepTwo?: 0 | 1 | 2;
+  isLoading?: "pending" | "fulfilled" | "reject";
+}
 
 const initialState: IUserProfile = {
   email: undefined,

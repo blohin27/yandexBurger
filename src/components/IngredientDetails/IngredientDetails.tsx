@@ -1,7 +1,11 @@
 import styles from "./styles.module.css";
 import classNames from "classnames";
 import { FC } from "react";
-import { IIngredient, IIngredientDetailsComponent } from "../../types/types";
+import { IIngredient } from "../../types/types";
+
+interface IIngredientDetailsComponent {
+  item?: IIngredient;
+}
 
 export const IngredientDetails: FC<IIngredientDetailsComponent> = ({
   item,

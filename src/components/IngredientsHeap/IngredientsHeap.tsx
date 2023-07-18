@@ -1,8 +1,14 @@
 import { IngredientTypes } from "../IngredientTypes/IngredientTypes";
 import React, { forwardRef, useCallback } from "react";
 import styles from "./styles.module.css";
-import { IIngredientsHeap } from "../../types/types";
 import { useIngredientsCategories } from "../../common/IngredientsHelper";
+import { IIngredient } from "../../types/types";
+
+interface IIngredientsHeap {
+  items: IIngredient[];
+  currentTab: string;
+  setCurrentTab: (tab: string) => void;
+}
 
 export const IngredientsHeap = forwardRef<HTMLDivElement, IIngredientsHeap>(
   ({ items, setCurrentTab, currentTab }, ref) => {

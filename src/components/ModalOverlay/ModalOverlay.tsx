@@ -1,6 +1,9 @@
 import styles from "./styles.module.css";
 import { FC, PropsWithChildren } from "react";
-import { IModalOverlay } from "../../types/types";
+
+interface IModalOverlay {
+  onClick?: () => void;
+}
 
 export const ModalOverlay: FC<PropsWithChildren<IModalOverlay>> = ({
   onClick,
