@@ -5,12 +5,16 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { FC, useCallback } from "react";
-import { IIngredientItemComponent } from "../../types/types";
 import { setIngredientDetails } from "../../services/reducers/currentIngredientDetailsSlice";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import { useDrag } from "react-dnd";
 import nextId from "react-id-generator";
 import { counterIngredients } from "../../common/helper";
+import { IIngredient } from "../../types/types";
+
+interface IIngredientItemComponent {
+  item: IIngredient;
+}
 
 export const IngredientItem: FC<IIngredientItemComponent> = ({ item }) => {
   const dispatch = useAppDispatch();
@@ -54,10 +58,7 @@ export const IngredientItem: FC<IIngredientItemComponent> = ({ item }) => {
           </div>
           <CurrencyIcon type="primary" />
         </div>
-        <div
-          style={{ textAlign: "center" }}
-          className={classNames("mt-2", styles.name)}
-        >
+        <div className={classNames("mt-2", styles.name, styles.text)}>
           <p className="text text_type_main-default">{item.name}</p>
         </div>
       </div>

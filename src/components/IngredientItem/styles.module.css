@@ -25,3 +25,6 @@
 .priceBlock{
     display: flex;
 }
+.text{
+    text-align: center;
+}

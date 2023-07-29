@@ -12,7 +12,16 @@ import {
 import { useAppDispatch } from "../../services/store/store";
 import styles from "./styles.module.css";
 import { useDrag, useDrop } from "react-dnd";
-import { DragItemType, IConstructorElementComponent } from "../../types/types";
+
+type DragItemType = { index: number };
+
+interface IConstructorElementComponent {
+  idGen?: string;
+  name: string;
+  price: number;
+  image_large: string;
+  index: number;
+}
 
 export const ConstructorElementComponent: FC<IConstructorElementComponent> = ({
   idGen,

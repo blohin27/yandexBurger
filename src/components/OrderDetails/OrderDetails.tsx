@@ -1,14 +1,12 @@
 import styles from "./style.module.css";
 import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import Subtract from "../../images/Subtract.svg";
-import { FC, useEffect } from "react";
-import { IOrderDetails } from "../../types/types";
-import { useAppDispatch, useAppSelector } from "../../services/store/store";
-import {
-  getUser,
-  refreshToken,
-} from "../../services/reducers/userProfileSlice";
-import { useLocation, useNavigate } from "react-router";
+import { FC } from "react";
+
+export interface IOrderDetails {
+  openOrder: () => void;
+  price: number;
+}
 
 export const OrderDetails: FC<IOrderDetails> = ({ openOrder, price }) => {
   return (

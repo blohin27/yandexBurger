@@ -32,8 +32,8 @@ export const Register: FC = () => {
   }, [accessToken]);
 
   return (
-    <div style={{ height: "100vh" }}>
-      <Content style={{ height: "88%" }}>
+    <div className={style.registerWrap}>
+      <Content className={style.content}>
         <div className={style.wrapCenter}>
           <div className="mb-6">
             <p className="text text_type_main-medium">Регистрация</p>
@@ -127,7 +127,6 @@ export const Register: FC = () => {
               htmlType="button"
               type="secondary"
               size="medium"
-              style={{ padding: 0 }}
               onClick={() => {
                 navigate("/login");
               }}

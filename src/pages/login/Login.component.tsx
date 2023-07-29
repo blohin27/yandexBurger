@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import { AppHeader, isActiveEnum } from "../../components/AppHeader/AppHeader";
 import { Content } from "../../components";
 import style from "./styles.module.css";
 import {
@@ -38,8 +37,8 @@ export const Login: FC = () => {
   }, [accessToken]);
 
   return (
-    <div style={{ height: "100vh" }}>
-      <Content style={{ height: "88%" }}>
+    <div className={style.loginWrap}>
+      <Content className={style.content}>
         <div className={style.wrapCenter}>
           <div className="mb-6">
             <p className="text text_type_main-medium">Вход</p>
@@ -87,7 +86,7 @@ export const Login: FC = () => {
                 extraClass="ml-1"
               />
             </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div className={style.otherButton}>
               <Button htmlType="submit" type="primary" size="medium">
                 Войти
               </Button>
@@ -101,7 +100,6 @@ export const Login: FC = () => {
               htmlType="button"
               type="secondary"
               size="medium"
-              style={{ padding: 0 }}
               onClick={() => {
                 navigate("/register");
               }}
@@ -117,7 +115,6 @@ export const Login: FC = () => {
               htmlType="button"
               type="secondary"
               size="medium"
-              style={{ padding: 0 }}
               onClick={() => {
                 navigate("/forgot-password");
               }}

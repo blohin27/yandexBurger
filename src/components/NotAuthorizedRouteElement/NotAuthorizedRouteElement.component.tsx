@@ -15,19 +15,14 @@ export const NotAuthorizedRouteElement: FC<Props> = ({ element }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const accessToken = useAppSelector((state) => state.userProfile.accessToken);
-  const refreshTokenBoolean = !!localStorage.getItem("refreshToken");
+  const refreshTokenBoolean = Boolean(localStorage.getItem("refreshToken"));
   const location = useLocation();
 
   useEffect(() => {
-    console.log("NotAuthorizedRouteElement 3 state ", location.state);
     if (refreshTokenBoolean) {
       if (location.state?.url) {
         navigate(`${location.state?.url}`);
       } else {
-        console.log(
-          "NotAuthorizedRouteElement 4 после авторизации  ",
-          location.state
-        );
         navigate("/profile");
       }
     }

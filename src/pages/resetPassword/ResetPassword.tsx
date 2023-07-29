@@ -47,8 +47,8 @@ export const ResetPassword: FC = () => {
   }, [isloading]);
 
   return (
-    <div style={{ height: "100vh" }}>
-      <Content style={{ height: "88%" }}>
+    <div className={style.resetWrap}>
+      <Content className={style.content}>
         <div className={style.wrapCenter}>
           <div className="mb-6">
             <p className="text text_type_main-medium">Восстановление пароля</p>
@@ -105,7 +105,6 @@ export const ResetPassword: FC = () => {
               htmlType="button"
               type="secondary"
               size="medium"
-              style={{ padding: 0 }}
               onClick={() => {
                 navigate("/login");
               }}

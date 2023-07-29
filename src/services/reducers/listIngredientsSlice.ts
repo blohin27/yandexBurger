@@ -1,10 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { INGREDIENTS_URL } from "../../const/const";
-import {
-  IIngredient,
-  IResponse,
-  IStateListIngredients,
-} from "../../types/types";
+import { IIngredient } from "../../types/types";
+
+interface IResponse {
+  success: boolean;
+  data: IIngredient[];
+}
+
+interface IStateListIngredients {
+  ingredients: IIngredient[] | null;
+  isFetchError?: boolean;
+}
 
 const initialState: IStateListIngredients = {
   ingredients: [],

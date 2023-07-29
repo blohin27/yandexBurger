@@ -11,13 +11,35 @@ import {
 } from "../../const/const";
 import { bodyUserProfileReset } from "../../common/helper";
 
-import {
-  IResponseCreateUser,
-  IResponseRefreshToken,
-  IResponseUpdateuser,
-  IUserProfile,
-} from "../../types/types";
 import { Store } from "react-notifications-component";
+
+interface IResponseUpdateUser {
+  success: boolean;
+  user: IUserProfile;
+}
+
+interface IResponseRefreshToken {
+  success: boolean;
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface IResponseCreateUser {
+  success: boolean;
+  user: IUserProfile;
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface IUserProfile {
+  email?: string;
+  name?: string;
+  password?: string;
+  accessToken?: string;
+  success?: boolean;
+  accessResetPasswordStepTwo?: 0 | 1 | 2;
+  isLoading?: "pending" | "fulfilled" | "reject";
+}
 
 const initialState: IUserProfile = {
   email: undefined,
@@ -92,7 +114,7 @@ export const editUser = createAsyncThunk(
         body: JSON.stringify(objReq),
       });
       if (response.status === 200) {
-        const data: IResponseUpdateuser = await response.json();
+        const data: IResponseUpdateUser = await response.json();
         return data;
       } else {
         throw new Error();
@@ -115,7 +137,7 @@ export const getUser = createAsyncThunk(
         },
       });
       if (response.status === 200) {
-        const data: IResponseUpdateuser = await response.json();
+        const data: IResponseUpdateUser = await response.json();
         return data;
       } else {
         throw new Error();
@@ -321,7 +343,7 @@ const userProfileSlice = createSlice({
     },
     [getUser.fulfilled.toString()]: (
       state: IUserProfile,
-      action: PayloadAction<IResponseUpdateuser>
+      action: PayloadAction<IResponseUpdateUser>
     ) => {
       state.name = action.payload.user.name;
       state.email = action.payload.user.email;
@@ -331,7 +353,7 @@ const userProfileSlice = createSlice({
     },
     [editUser.fulfilled.toString()]: (
       state: IUserProfile,
-      action: PayloadAction<IResponseUpdateuser>
+      action: PayloadAction<IResponseUpdateUser>
     ) => {
       state.name = action.payload.user.name;
       state.email = action.payload.user.email;

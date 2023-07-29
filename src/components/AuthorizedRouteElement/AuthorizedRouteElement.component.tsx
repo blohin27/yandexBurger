@@ -21,15 +21,10 @@ export const AuthorizedRouteElement: FC<Props> = ({ element }) => {
   const accessToken = useAppSelector((state) => state.userProfile.accessToken);
 
   useEffect(() => {
-    console.log("AuthorizedRouteElement 1  pathname ", location.pathname);
     if (!accessToken) {
-      if (!!localStorage.getItem("refreshToken")) {
+      if (Boolean(localStorage.getItem("refreshToken"))) {
         dispatch(refreshToken());
       } else {
-        console.log(
-          "AuthorizedRouteElement 2  перенаправление на /login",
-          location.pathname
-        );
         navigate("/login", { state: { url: location.pathname } });
       }
     } else {
@@ -39,7 +34,6 @@ export const AuthorizedRouteElement: FC<Props> = ({ element }) => {
 
   useEffect(() => {
     if (!!accessToken && location.state !== "") {
-      console.log("locationState", location.state);
       //navigate(`${location.state}`);
     }
   }, [accessToken, location.state]);

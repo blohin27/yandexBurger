@@ -3,7 +3,7 @@ import styles from "./styles.module.css";
 import classNames from "classnames";
 import { OrderDetails } from "../OrderDetails/OrderDetails";
 import { FC, useEffect } from "react";
-import { IBurgerConstructor, IIngredient } from "../../types/types";
+import { IIngredient } from "../../types/types";
 import { useIngredientsCategories } from "../../common/IngredientsHelper";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import {
@@ -13,6 +13,11 @@ import {
 import { useDrop } from "react-dnd";
 import nextId from "react-id-generator";
 import { ConstructorElementComponent } from "../ConstructorElement/ConstructorElement";
+
+interface IBurgerConstructor {
+  selectedItems?: IIngredient[];
+  openOrder: () => void;
+}
 
 export const BurgerConstructor: FC<IBurgerConstructor> = ({
   selectedItems = [],

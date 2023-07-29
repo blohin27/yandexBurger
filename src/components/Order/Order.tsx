@@ -5,7 +5,7 @@ import done from "../../images/done.png";
 import { useAppSelector } from "../../services/store/store";
 import { MoonLoader } from "react-spinners";
 
-export const Order: FC = memo(() => {
+export const Order: React.FC = memo(() => {
   const orderDetails = useAppSelector(
     (state) => state.createdOrderSlice.OrderDetails
   );
