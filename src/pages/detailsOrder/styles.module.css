@@ -1,0 +1,98 @@
+.appContent {
+    display: flex;
+    margin: 0 auto;
+    width: 1240px;
+    flex-direction: column;
+}
+
+.wrap {
+    display: flex;
+    width: 50%;
+    margin: 0 auto;
+
+}
+
+.content {
+    display: flex;
+    min-width: 650px;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.contentModal {
+    display: flex;
+    width: 680px;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.numberBlock {
+    display: flex;
+    justify-content: center;
+}
+
+.numberOfDate {
+    display: flex;
+    justify-content: space-between;
+}
+
+.status {
+    color: rgb(0, 204, 203);
+}
+
+.priceBlock {
+    display: flex;
+    flex: 1 0 30%;
+    align-items: center;
+    justify-content: end;
+}
+
+.imgStyle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.imageStyle {
+    border: 3px solid rgb(85, 29, 115);
+    border-radius: 100%;
+    position: relative;
+    overflow: hidden;
+    width: 70px;
+    height: 65px;
+    background-color: rgb(28, 28, 33);
+}
+
+.structure {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.leftBlock, .rightBlock {
+    display: flex;
+    align-items: center;
+}
+
+.scrollBock {
+    overflow-y: auto;
+    max-height: 320px;
+}
+
+/*стили модалки*//*стили модалки*//*стили модалки*//*стили модалки*/
+/*стили модалки*//*стили модалки*//*стили модалки*//*стили модалки*/
+
+.modalOrderDetails {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
+

@@ -1,0 +1,190 @@
+
+.appContent {
+    display: flex;
+    margin: 0 auto;
+    width: 1240px;
+    flex-direction: column;
+
+}
+
+.content {
+    display: flex;
+    width: 100%;
+
+    height: 80vh;
+    margin: 0 auto;
+
+}
+
+.band {
+    display: flex;
+    margin-right: 20px;
+    flex: 1 0 45%;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.statusBand {
+    display: flex;
+    flex: 1 0 45%;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.orderCardWrap {
+    background-color: rgb(28, 28, 33);
+    border-radius: 40px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.numberOfDate {
+    display: flex;
+    justify-content: space-between;
+}
+
+.numberBlock {
+}
+
+.dateBlock {
+}
+
+.nameBurger {
+}
+
+.ingredAndPrice {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ingredBlock {
+    display: flex;
+    flex: 1 0 70%;
+
+    position: relative;
+    height: 76px;
+}
+
+.imgItemOne {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 7;
+
+}
+
+.imgItemTwo {
+    position: absolute;
+    top: 0;
+    left: 50px;
+    z-index: 6;
+}
+
+.imgItemThree {
+    position: absolute;
+    top: 0;
+    left: 100px;
+    z-index: 5;
+}
+
+.imgItemFour {
+    position: absolute;
+    top: 0;
+    left: 150px;
+    z-index: 4;
+}
+
+.imgItemFive {
+    position: absolute;
+    top: 0;
+    left: 200px;
+    z-index: 3;
+}
+
+.imgItemSix {
+    position: absolute;
+    top: 0;
+    left: 250px;
+    z-index: 2;
+}
+
+.priceBlock {
+    display: flex;
+    flex: 1 0 30%;
+    align-items: center;
+    justify-content: end;
+}
+
+
+.imageStyle {
+    border: 3px solid rgb(85, 29, 115);
+    border-radius: 100%;
+    position: relative;
+    overflow: hidden;
+    width: 70px;
+    height: 65px;
+    background-color: rgb(28, 28, 33);
+}
+
+.withNumbers {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.imgStyleWithNumbers {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    opacity: .3;
+}
+
+.imgStyle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.numbersOrders {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+}
+
+.numbersReady {
+    display: flex;
+    flex: 1 0 45%;
+
+    flex-direction: column;
+}
+
+.numbersInProgress {
+    display: flex;
+    flex: 1 0 45%;
+    flex-direction: column;
+
+}
+
+.numbersArrayOrders {
+    display: flex;
+    justify-content: space-between;
+}
+
+.columnOne {
+    display: flex;
+    flex: 1 0 50%;
+
+    color: rgb(0, 204, 203);
+    flex-direction: column;
+}
+

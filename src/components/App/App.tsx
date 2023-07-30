@@ -5,6 +5,7 @@ import { Profile } from "../../pages/profile";
 import { OrderFeed } from "../../pages/orderFeed/OrderFeed.component";
 import { Container } from "../Container/Container";
 import {
+  DetailsOrder,
   ForgotPassword,
   Ingredients,
   Login,
@@ -23,10 +24,9 @@ export const App: React.FC = () => {
       <ReactNotifications />
       <Routes>
         <Route path={"/"} element={<DesignBurger />} />
-        <Route
-          path={"/order"}
-          element={<AuthorizedRouteElement element={<OrderFeed />} />}
-        />
+        <Route path={"/feed"} element={<OrderFeed />}>
+          <Route path={":id"} element={<DetailsOrder />} />
+        </Route>
         <Route
           path={"/profile/"}
           element={<AuthorizedRouteElement element={<Profile />} />}
@@ -51,7 +51,7 @@ export const App: React.FC = () => {
         <Route
           path={"/reset-password"}
           element={<NotAuthorizedRouteElement element={<ResetPassword />} />}
-        />{" "}
+        />
         <Route path={"/ingredients/:id"} element={<Ingredients />} />
         <Route path="*" element={<NotFound404 />} />
       </Routes>

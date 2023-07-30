@@ -16,3 +16,4 @@ export * from "./OrderDetails";
 export * from "./Tabs";
 export * from "./AuthorizedRouteElement";
 export * from "./NotAuthorizedRouteElement";
+export * from "./OrderItemBlock";
