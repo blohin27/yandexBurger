@@ -18,3 +18,13 @@ export interface IStateListIngredientsConstructor {
   totalPrice: number;
   ingredientsBun: IIngredient[];
 }
+
+export interface Order {
+  createdAt: string;
+  ingredients: string[];
+  name: string;
+  number: number;
+  status: string;
+  updateAt: string;
+  _id: string;
+}

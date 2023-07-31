@@ -12,32 +12,41 @@ import {
   OrderItemBlock,
 } from "../../components";
 import { DetailsOrder } from "../detailsOrder";
+import {
+  connect,
+  wsClose,
+  wsConnecting,
+  wsError,
+  wsMessage,
+  wsOpen,
+} from "../../services/actions/actions";
+import { fetchData } from "../../services/reducers/listIngredientsSlice";
 
 export const OrderFeed = () => {
-  const state = useAppSelector((state) => state);
+  const ordersArray = useAppSelector(
+    (state) => state.OrderFeedReducer.ordersObject.orders
+  );
+  const listIngredients = useAppSelector(
+    (state) => state.listIngredientsSlice.ingredients
+  );
+
   const dispatch = useAppDispatch();
-  const location = useLocation();
   const params = useParams();
-  const orderTest = {
-    createdAt: "2023-07-30T03:49:52.406Z",
-    ingredients: [
-      "631bc04d360a19001101b7f6",
-      "631bc04d360a19001101b801",
-      "631bc04d360a19001101b7f6",
-    ],
-    0: "631bc04d360a19001101b7f6",
-    1: "631bc04d360a19001101b801",
-    2: "631bc04d360a19001101b7f6",
-    name: "Краторный фалленианский бургер",
-    number: 918,
-    status: "done",
-    updatedAt: "2023-07-30T03:49:52.462Z",
-    _id: "64c5dde0ead69d0011d4f34a",
-  };
+
+  useEffect(() => {
+    dispatch(connect("wss://norma.nomoreparties.space/orders/all"));
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(setHeaderActive("OrderFeed"));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!listIngredients) {
+      dispatch(fetchData());
+    }
+  }, []);
+
   return (
     <>
       {true && !params.id && (
@@ -50,13 +59,18 @@ export const OrderFeed = () => {
               "mb-5"
             )}
           >
-            <p className="text text_type_main-large">Лента заказов</p>
+            <p className="text text_type_main-large">{`Лента заказов  `}</p>
           </div>
           <div className={styles.content}>
             <div className={styles.band}>
               <div className={"pr-2"}>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(() => {
-                  return <OrderItemBlock />;
+                {ordersArray?.map((item) => {
+                  return (
+                    <OrderItemBlock
+                      order={item}
+                      ingredients={listIngredients ?? undefined}
+                    />
+                  );
                 })}
               </div>
             </div>

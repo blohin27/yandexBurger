@@ -1,12 +1,26 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import classNames from "classnames";
 import styles from "./styles.module.css";
 import {
   CurrencyIcon,
   FormattedDate,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { IIngredient, Order } from "../../types/types";
+import { fetchData } from "../../services/reducers/listIngredientsSlice";
+import { useAppDispatch, useAppSelector } from "../../services/store/store";
 
-export const OrderItemBlock: FC = () => {
+interface IOrder {
+  order?: Order;
+  ingredients?: IIngredient[];
+}
+
+export const OrderItemBlock: FC<IOrder> = ({ order, ingredients }) => {
+  const dispatch = useAppDispatch();
+
+  const priceOrder = order?.ingredients.reduce((item) => {
+    return 0;
+  }, 0);
+
   return (
     <div>
       <div className={classNames(styles.orderCardWrap, "pt-6", "mb-5")}>
@@ -17,7 +31,7 @@ export const OrderItemBlock: FC = () => {
               "text text_type_digits-default"
             )}
           >
-            #034535
+            {`#${order?.number}`}
           </div>
           <div
             className={classNames(
@@ -25,7 +39,7 @@ export const OrderItemBlock: FC = () => {
               "text text_type_main-default text_color_inactive"
             )}
           >
-            <FormattedDate date={new Date("2023-07-30T03:49:52.406Z")} />
+            <FormattedDate date={new Date(`${order?.createdAt}`)} />
           </div>
         </div>
 
@@ -36,7 +50,7 @@ export const OrderItemBlock: FC = () => {
             "mb-6"
           )}
         >
-          {"Краторный фалленианский бургер "}
+          {`${order?.name} `}
         </div>
         <div className={classNames(styles.ingredAndPrice, "mb-6")}>
           <div className={classNames(styles.ingredBlock)}>
