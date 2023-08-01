@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
 import { DesignBurger } from "../../pages/designBurger";
 import { Profile } from "../../pages/profile";
 import { OrderFeed } from "../../pages/orderFeed/OrderFeed.component";
@@ -28,15 +28,19 @@ export const App: React.FC = () => {
           <Route path={":id"} element={<DetailsOrder />} />
         </Route>
         <Route
-          path={"/profile/"}
+          path={"/profile"}
           element={<AuthorizedRouteElement element={<Profile />} />}
         >
           <Route
             path={"order"}
             element={<AuthorizedRouteElement element={<OrderProfile />} />}
-          />
+          >
+            <Route
+              path={":id"}
+              element={<AuthorizedRouteElement element={<DetailsOrder />} />}
+            />
+          </Route>
         </Route>
-        <Route path={"/profile/order/:id"} element={<DetailsOrder />} />
         <Route
           path={"/register"}
           element={<NotAuthorizedRouteElement element={<Ingredients />} />}

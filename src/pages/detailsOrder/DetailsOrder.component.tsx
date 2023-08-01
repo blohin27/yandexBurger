@@ -31,41 +31,68 @@ export const DetailsOrder: FC<MyComponentProps> = ({
     (state) => state.listIngredientsSlice.ingredients
   );
   const status = useAppSelector((state) => state.OrderFeedReducer.status);
+  const statusMyOrders = useAppSelector(
+    (state) => state.MyOrderFeedReducer.status
+  );
 
   const ordersArray = useAppSelector(
     (state) => state.OrderFeedReducer.ordersObject.orders
   );
+  const myOrdersArray = useAppSelector(
+    (state) => state.MyOrderFeedReducer.ordersObject.orders
+  );
+
   const getOrderItem = useAppSelector(
     (state) => state.createdOrderSlice.currentOrder
   );
 
+  // useEffect(() => {
+  //   if (params.id) {
+  //     dispatch(getOrder(String(params.id)));
+  //   }
+  // }, [dispatch, params.id]);
+
   useEffect(() => {
+    if (!listIngredients) {
+      dispatch(fetchData());
+    }
+  }, [dispatch, listIngredients]);
+
+  const getOrderGetch = useCallback(() => {
     if (params.id) {
       dispatch(getOrder(String(params.id)));
     }
   }, [dispatch, params.id]);
 
-  useEffect(() => {
-    dispatch(fetchData());
-  }, []);
-
   const orderForPage = useMemo(() => {
-    const resp = ordersArray?.find((item) => String(item.number) === params.id);
-    if (resp) return resp;
-    return getOrderItem?.orders[0];
-  }, [ordersArray, params.id]);
+    const arrayOrders = ordersArray ?? myOrdersArray;
+    const resp = arrayOrders?.find((item) => String(item.number) === params.id);
+    if (
+      (status === WebsocketStatus.ONLINE ||
+        statusMyOrders === WebsocketStatus.ONLINE) &&
+      (ordersArray?.length !== 0 || myOrdersArray?.length !== 0) &&
+      !resp
+    ) {
+      getOrderGetch();
+    }
 
-  const getObjectOrderIngredients = useCallback((item?: Order) => {
-    return item?.ingredients.reduce<{
-      [key: string]: { count: number; info?: IIngredient };
-    }>((acc, ingredientId) => {
-      acc[ingredientId] = {
-        count: (acc[ingredientId]?.count || 0) + 1,
-        info: listIngredients?.find((item) => item._id === ingredientId),
-      };
-      return acc;
-    }, {});
-  }, []);
+    return resp;
+  }, [myOrdersArray, ordersArray, params.id]);
+
+  const getObjectOrderIngredients = useCallback(
+    (item?: Order) => {
+      return item?.ingredients.reduce<{
+        [key: string]: { count: number; info?: IIngredient };
+      }>((acc, ingredientId) => {
+        acc[ingredientId] = {
+          count: (acc[ingredientId]?.count || 0) + 1,
+          info: listIngredients?.find((item) => item._id === ingredientId),
+        };
+        return acc;
+      }, {});
+    },
+    [listIngredients]
+  );
 
   if (modal && order) {
     return <ContentForModal order={order} />;
@@ -98,7 +125,6 @@ export const DetailsOrder: FC<MyComponentProps> = ({
       return sum;
     }, 0);
 
-  console.log("orderForPage", orderForPage, status !== WebsocketStatus.ONLINE);
   if (!modal) {
     return (
       <div className={classNames(styles.appContent)}>

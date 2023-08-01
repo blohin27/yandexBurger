@@ -64,6 +64,20 @@ export const OrderItemBlock: FC<IOrder> = ({
     }
   }, [dispatch, order]);
 
+  const statusTranslate = useCallback((item?: string) => {
+    if (item === "done") {
+      return "Выполнен";
+    }
+    if (item === "pending") {
+      return "Готовится";
+    }
+    if (item === "created") {
+      return "Создан";
+    }
+
+    return "Нет данных";
+  }, []);
+
   return (
     <div onClick={openModal}>
       <div className={classNames(styles.orderCardWrap, "pt-6", "mb-5")}>
@@ -101,7 +115,7 @@ export const OrderItemBlock: FC<IOrder> = ({
               "text text_type_main-small "
             )}
           >
-            {`${order?.status === "done" ? "Выполнен" : order?.status}`}
+            {statusTranslate(order?.status)}
           </div>
         </div>
 

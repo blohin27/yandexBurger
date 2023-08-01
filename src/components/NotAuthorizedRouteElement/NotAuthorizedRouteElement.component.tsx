@@ -4,7 +4,7 @@ import { refreshToken } from "../../services/reducers/userProfileSlice";
 import { useLocation, useNavigate } from "react-router";
 
 interface Props {
-  element: ReactElement<any, any>;
+  element: React.ReactNode;
 }
 
 /*

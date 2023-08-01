@@ -7,7 +7,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router";
 
 interface Props {
-  element: ReactElement<any, any>;
+  element: React.ReactNode;
 }
 
 /*

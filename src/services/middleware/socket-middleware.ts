@@ -50,9 +50,7 @@ export const socketMiddleware = (
           dispatch(onOpen());
         };
 
-        socket.onerror = (err) => {
-          console.log("errorMD");
-        };
+        socket.onerror = (err) => {};
 
         socket.onmessage = (event) => {
           const { data } = event;
@@ -77,12 +75,10 @@ export const socketMiddleware = (
         };
 
         if (wsSendMessage && wsSendMessage.match(action)) {
-          console.log("send");
           socket.send(JSON.stringify(action.payload));
         }
 
         if (wsDisconnect.match(action)) {
-          console.log("disconnect");
           clearTimeout(reconnectTimer);
           isConnected = false;
           reconnectTimer = 0;

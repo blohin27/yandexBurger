@@ -41,10 +41,6 @@ export const OrderFeed = () => {
   const modalOrder = useAppSelector(
     (state) => state.OrderFeedReducer.modalOrderFeed
   );
-  const [modalState, setModalState] = useState<{
-    open: boolean;
-    order: IOrder | undefined;
-  }>({ open: false, order: undefined });
 
   const dispatch = useAppDispatch();
   const params = useParams();

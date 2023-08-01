@@ -33,19 +33,15 @@ export const MyOrderFeedReducer = createReducer(initialState, (builder) => {
     })
     .addCase(wsClose, (state) => {
       state.status = WebsocketStatus.OFFLINE;
-      console.log("MyOrderFeedReducer wsClose");
     })
     .addCase(wsError, (state, action) => {
       state.connectionError = action.payload;
-      console.log("MyOrderFeedReducer wsError");
     })
     .addCase(wsMessage, (state, action) => {
       state.ordersObject = action.payload;
-      console.log("MyOrderFeedReducer .addCase(wsMessage");
     })
     .addCase(wsModalOrderFeed, (state, action) => {
       state.modalOrderFeed = action.payload;
-      console.log("MyOrderFeedReducer wsModalOrderFeed");
     });
 });
 
