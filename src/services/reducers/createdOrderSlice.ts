@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CREATED_ORDER_URL } from "../../const/const";
+import { CREATED_ORDER_URL, INGREDIENTS_URL } from "../../const/const";
 import { bodyRequestForOrder } from "../../common/helper";
 
-import { IStateListIngredientsConstructor } from "../../types/types";
+import { IIngredient } from "../../types/types";
+import { Order } from "../../components";
+import { Order as IOrder } from "../../types/types";
 
 type TypeOrder = { number: number };
 
@@ -16,26 +18,46 @@ interface ICreatedOrder {
   OrderDetails: TypeOrderDetails | null;
   openOrder: boolean;
   isFetchError?: boolean;
+  currentOrder: GetOrder | undefined;
+}
+
+export interface GetOrder {
+  success: boolean;
+  orders: IOrder[];
+}
+
+export interface IStateListIngredientsConstructorWithAcessToken {
+  ingredientsConstructor: IIngredient[];
+  totalPrice: number;
+  ingredientsBun: IIngredient[];
+  accessToken?: string;
 }
 
 const initialState: ICreatedOrder = {
   OrderDetails: null,
   openOrder: false,
   isFetchError: false,
+  currentOrder: undefined,
 };
 
 export const createdOrderRequest = createAsyncThunk(
   "createdOrderSlice/createdOrderRequest",
-  async (param: IStateListIngredientsConstructor, { rejectWithValue }) => {
-    const bodyRequest = bodyRequestForOrder(param);
+  async (
+    param: IStateListIngredientsConstructorWithAcessToken,
+    { rejectWithValue }
+  ) => {
+    const { accessToken, ...rest } = param;
+    const bodyRequest = bodyRequestForOrder(rest);
     try {
       const response = await fetch(CREATED_ORDER_URL, {
         method: "POST",
         headers: {
+          Authorization: accessToken ?? "",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(bodyRequest),
       });
+
       if (response.status === 200) {
         const data: TypeOrderDetails = await response.json();
         return data;
@@ -44,6 +66,23 @@ export const createdOrderRequest = createAsyncThunk(
       }
     } catch (e) {
       return rejectWithValue("Ошибка сработал rejectWithValue ");
+    }
+  }
+);
+
+export const getOrder = createAsyncThunk(
+  "createdOrderSlice/getOrder",
+  async (params: string, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${CREATED_ORDER_URL}/${params}`);
+      if (response.status === 200) {
+        const data: GetOrder = await response.json();
+        return data;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      return rejectWithValue("Ошибка получения данныз");
     }
   }
 );
@@ -73,6 +112,12 @@ const createdOrderSlice = createSlice({
       action: PayloadAction<TypeOrderDetails>
     ) => {
       state.isFetchError = true;
+    },
+    [getOrder.fulfilled.toString()]: (
+      state: ICreatedOrder,
+      action: PayloadAction<GetOrder>
+    ) => {
+      state.currentOrder = action.payload;
     },
   },
 });

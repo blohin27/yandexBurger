@@ -21,7 +21,7 @@
 
 .contentModal {
     display: flex;
-    width: 680px;
+    min-width: 680px;
     justify-content: center;
     flex-direction: column;
 }
@@ -92,6 +92,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+
 
 
 

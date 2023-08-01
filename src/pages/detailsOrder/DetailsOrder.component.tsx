@@ -1,20 +1,104 @@
-import React, { FC } from "react";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 import styles from "./styles.module.css";
 import classNames from "classnames";
 import {
   CurrencyIcon,
   FormattedDate,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import { IIngredient, Order } from "../../types/types";
+import { useAppDispatch, useAppSelector } from "../../services/store/store";
+import { useParams } from "react-router";
+import { WebsocketStatus } from "../../services/reducers/orderWsReducer";
+import { connect, disconnect } from "../../services/actions/actions";
+import { fetchData } from "../../services/reducers/listIngredientsSlice";
+import nextId from "react-id-generator";
+import { getOrder } from "../../services/reducers/createdOrderSlice";
 
 interface MyComponentProps {
   style?: React.CSSProperties;
   modal?: boolean;
+  order?: Order;
 }
 
-export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
-  if (modal) {
-    return <ContentForModal />;
+export const DetailsOrder: FC<MyComponentProps> = ({
+  modal = false,
+  order,
+}) => {
+  const params = useParams();
+  const dispatch = useAppDispatch();
+
+  const listIngredients = useAppSelector(
+    (state) => state.listIngredientsSlice.ingredients
+  );
+  const status = useAppSelector((state) => state.OrderFeedReducer.status);
+
+  const ordersArray = useAppSelector(
+    (state) => state.OrderFeedReducer.ordersObject.orders
+  );
+  const getOrderItem = useAppSelector(
+    (state) => state.createdOrderSlice.currentOrder
+  );
+
+  useEffect(() => {
+    if (params.id) {
+      dispatch(getOrder(String(params.id)));
+    }
+  }, [dispatch, params.id]);
+
+  useEffect(() => {
+    dispatch(fetchData());
+  }, []);
+
+  const orderForPage = useMemo(() => {
+    const resp = ordersArray?.find((item) => String(item.number) === params.id);
+    if (resp) return resp;
+    return getOrderItem?.orders[0];
+  }, [ordersArray, params.id]);
+
+  const getObjectOrderIngredients = useCallback((item?: Order) => {
+    return item?.ingredients.reduce<{
+      [key: string]: { count: number; info?: IIngredient };
+    }>((acc, ingredientId) => {
+      acc[ingredientId] = {
+        count: (acc[ingredientId]?.count || 0) + 1,
+        info: listIngredients?.find((item) => item._id === ingredientId),
+      };
+      return acc;
+    }, {});
+  }, []);
+
+  if (modal && order) {
+    return <ContentForModal order={order} />;
   }
+
+  const objectOrderIngredients = getObjectOrderIngredients(
+    orderForPage || getOrderItem?.orders[0]
+  );
+
+  let sum: number | undefined = 0;
+
+  if (listIngredients?.length !== 0) {
+    sum = orderForPage?.ingredients.reduce((previousValue, currentValue) => {
+      const priceObject = listIngredients?.find(
+        (item) => item._id === currentValue
+      );
+      const newAcc = previousValue + (priceObject?.price || 0);
+
+      return newAcc;
+    }, 0);
+  }
+
+  const totalPrice =
+    objectOrderIngredients &&
+    Object.keys(objectOrderIngredients).reduce((acc, item) => {
+      const sum =
+        acc +
+        (objectOrderIngredients[item]?.info?.price || 1) *
+          objectOrderIngredients[item].count;
+      return sum;
+    }, 0);
+
+  console.log("orderForPage", orderForPage, status !== WebsocketStatus.ONLINE);
   if (!modal) {
     return (
       <div className={classNames(styles.appContent)}>
@@ -23,10 +107,10 @@ export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
             <div
               className={classNames(
                 styles.numberBlock,
-                "text text_type_digits-default"
+                "text text_type_digits-medium"
               )}
             >
-              #034535
+              {`#${orderForPage?.number ?? "Нет данных"}`}
             </div>
             <div
               className={classNames(
@@ -35,7 +119,7 @@ export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
                 "mt-10"
               )}
             >
-              {"Краторный фалленианский бургер "}
+              {`${orderForPage?.name ?? "Нет данных"}`}
             </div>
             <div
               className={classNames(
@@ -43,7 +127,11 @@ export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
                 "text text_type_main-default mt-3"
               )}
             >
-              Выполнен
+              {`${
+                orderForPage?.status === "done"
+                  ? "Выполнен"
+                  : orderForPage?.status ?? "Нет данных"
+              }`}
             </div>
             <div
               className={classNames(
@@ -55,314 +143,58 @@ export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
               {"Состав: "}
             </div>
             <div className={classNames(styles.scrollBock, "mb-3 mt-1")}>
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-                {/*иконка*/}
-                <div className={styles.leftBlock}>
-                  <div className={classNames(styles.imageStyle, "mr-3")}>
-                    <img
-                      className={styles.imgStyle}
-                      src={
-                        "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                      }
-                    ></img>
-                  </div>
-                  {/*название*/}
-                  <div
-                    className={classNames(
-                      styles.nameBurger,
-                      "text text_type_main-default"
-                    )}
-                  >
-                    {"Краторный фалленианский бургер "}
-                  </div>
-                </div>
-                {/*кол-во элементов */}
-                <div className={styles.rightBlock}>
-                  <div
-                    className={classNames(
-                      styles.countIngred,
-                      "text text text_type_digits-default"
-                    )}
-                  >
-                    {"2"} x
-                  </div>
-                  {/*цена элементов*/}
-                  <div
-                    className={classNames(
-                      styles.Price,
-                      "text text text_type_digits-default mr-2 ml-2"
-                    )}
-                  >
-                    1823
-                  </div>
+              {objectOrderIngredients &&
+                Object.keys(objectOrderIngredients).map((item) => {
+                  const object = objectOrderIngredients[item];
 
-                  <CurrencyIcon type="primary" />
-                </div>
-              </div>
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-                {/*иконка*/}
-                <div className={styles.leftBlock}>
-                  <div className={classNames(styles.imageStyle, "mr-3")}>
-                    <img
-                      className={styles.imgStyle}
-                      src={
-                        "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                      }
-                    ></img>
-                  </div>
-                  {/*название*/}
-                  <div
-                    className={classNames(
-                      styles.nameBurger,
-                      "text text_type_main-default"
-                    )}
-                  >
-                    {"Краторный фалленианский бургер "}
-                  </div>
-                </div>
-                {/*кол-во элементов */}
-                <div className={styles.rightBlock}>
-                  <div
-                    className={classNames(
-                      styles.countIngred,
-                      "text text text_type_digits-default"
-                    )}
-                  >
-                    {"2"} x
-                  </div>
-                  {/*цена элементов*/}
-                  <div
-                    className={classNames(
-                      styles.Price,
-                      "text text text_type_digits-default mr-2 ml-2"
-                    )}
-                  >
-                    1823
-                  </div>
+                  return (
+                    <div
+                      key={nextId()}
+                      className={classNames(styles.structure, "mb-1 mt-3 pr-6")}
+                    >
+                      {/*иконка*/}
+                      <div className={styles.leftBlock}>
+                        <div className={classNames(styles.imageStyle, "mr-3")}>
+                          <img
+                            className={styles.imgStyle}
+                            src={`${object?.info?.image_mobile}`}
+                          ></img>
+                        </div>
+                        {/*название*/}
+                        <div
+                          className={classNames(
+                            styles.nameBurger,
+                            "text text_type_main-default"
+                          )}
+                        >
+                          {`${object?.info?.name}`}
+                        </div>
+                      </div>
+                      {/*кол-во элементов */}
+                      <div className={styles.rightBlock}>
+                        <div
+                          className={classNames(
+                            styles.countIngred,
+                            "text text text_type_digits-default"
+                          )}
+                        >
+                          {`${object.count}`} x
+                        </div>
+                        {/*цена элементов*/}
+                        <div
+                          className={classNames(
+                            styles.Price,
+                            "text text text_type_digits-default mr-2 ml-2"
+                          )}
+                        >
+                          {`${object?.info?.price}`}
+                        </div>
 
-                  <CurrencyIcon type="primary" />
-                </div>
-              </div>
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-                {/*иконка*/}
-                <div className={styles.leftBlock}>
-                  <div className={classNames(styles.imageStyle, "mr-3")}>
-                    <img
-                      className={styles.imgStyle}
-                      src={
-                        "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                      }
-                    ></img>
-                  </div>
-                  {/*название*/}
-                  <div
-                    className={classNames(
-                      styles.nameBurger,
-                      "text text_type_main-default"
-                    )}
-                  >
-                    {"Краторный фалленианский бургер "}
-                  </div>
-                </div>
-                {/*кол-во элементов */}
-                <div className={styles.rightBlock}>
-                  <div
-                    className={classNames(
-                      styles.countIngred,
-                      "text text text_type_digits-default"
-                    )}
-                  >
-                    {"2"} x
-                  </div>
-                  {/*цена элементов*/}
-                  <div
-                    className={classNames(
-                      styles.Price,
-                      "text text text_type_digits-default mr-2 ml-2"
-                    )}
-                  >
-                    1823
-                  </div>
-
-                  <CurrencyIcon type="primary" />
-                </div>
-              </div>
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-                {/*иконка*/}
-                <div className={styles.leftBlock}>
-                  <div className={classNames(styles.imageStyle, "mr-3")}>
-                    <img
-                      className={styles.imgStyle}
-                      src={
-                        "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                      }
-                    ></img>
-                  </div>
-                  {/*название*/}
-                  <div
-                    className={classNames(
-                      styles.nameBurger,
-                      "text text_type_main-default"
-                    )}
-                  >
-                    {"Краторный фалленианский бургер "}
-                  </div>
-                </div>
-                {/*кол-во элементов */}
-                <div className={styles.rightBlock}>
-                  <div
-                    className={classNames(
-                      styles.countIngred,
-                      "text text text_type_digits-default"
-                    )}
-                  >
-                    {"2"} x
-                  </div>
-                  {/*цена элементов*/}
-                  <div
-                    className={classNames(
-                      styles.Price,
-                      "text text text_type_digits-default mr-2 ml-2"
-                    )}
-                  >
-                    1823
-                  </div>
-
-                  <CurrencyIcon type="primary" />
-                </div>
-              </div>
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-                {/*иконка*/}
-                <div className={styles.leftBlock}>
-                  <div className={classNames(styles.imageStyle, "mr-3")}>
-                    <img
-                      className={styles.imgStyle}
-                      src={
-                        "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                      }
-                    ></img>
-                  </div>
-                  {/*название*/}
-                  <div
-                    className={classNames(
-                      styles.nameBurger,
-                      "text text_type_main-default"
-                    )}
-                  >
-                    {"Краторный фалленианский бургер "}
-                  </div>
-                </div>
-                {/*кол-во элементов */}
-                <div className={styles.rightBlock}>
-                  <div
-                    className={classNames(
-                      styles.countIngred,
-                      "text text text_type_digits-default"
-                    )}
-                  >
-                    {"2"} x
-                  </div>
-                  {/*цена элементов*/}
-                  <div
-                    className={classNames(
-                      styles.Price,
-                      "text text text_type_digits-default mr-2 ml-2"
-                    )}
-                  >
-                    1823
-                  </div>
-
-                  <CurrencyIcon type="primary" />
-                </div>
-              </div>
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-                {/*иконка*/}
-                <div className={styles.leftBlock}>
-                  <div className={classNames(styles.imageStyle, "mr-3")}>
-                    <img
-                      className={styles.imgStyle}
-                      src={
-                        "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                      }
-                    ></img>
-                  </div>
-                  {/*название*/}
-                  <div
-                    className={classNames(
-                      styles.nameBurger,
-                      "text text_type_main-default"
-                    )}
-                  >
-                    {"Краторный фалленианский бургер "}
-                  </div>
-                </div>
-                {/*кол-во элементов */}
-                <div className={styles.rightBlock}>
-                  <div
-                    className={classNames(
-                      styles.countIngred,
-                      "text text text_type_digits-default"
-                    )}
-                  >
-                    {"2"} x
-                  </div>
-                  {/*цена элементов*/}
-                  <div
-                    className={classNames(
-                      styles.Price,
-                      "text text text_type_digits-default mr-2 ml-2"
-                    )}
-                  >
-                    1823
-                  </div>
-
-                  <CurrencyIcon type="primary" />
-                </div>
-              </div>
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-                {/*иконка*/}
-                <div className={styles.leftBlock}>
-                  <div className={classNames(styles.imageStyle, "mr-3")}>
-                    <img
-                      className={styles.imgStyle}
-                      src={
-                        "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                      }
-                    ></img>
-                  </div>
-                  {/*название*/}
-                  <div
-                    className={classNames(
-                      styles.nameBurger,
-                      "text text_type_main-default"
-                    )}
-                  >
-                    {"Краторный фалленианский бургер "}
-                  </div>
-                </div>
-                {/*кол-во элементов */}
-                <div className={styles.rightBlock}>
-                  <div
-                    className={classNames(
-                      styles.countIngred,
-                      "text text text_type_digits-default"
-                    )}
-                  >
-                    {"2"} x
-                  </div>
-                  {/*цена элементов*/}
-                  <div
-                    className={classNames(
-                      styles.Price,
-                      "text text text_type_digits-default mr-2 ml-2"
-                    )}
-                  >
-                    1823
-                  </div>
-
-                  <CurrencyIcon type="primary" />
-                </div>
-              </div>
+                        <CurrencyIcon type="primary" />
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
 
             {/*дата создания и стоимость*/}
@@ -373,7 +205,13 @@ export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
                   "text text_type_main-default text_color_inactive"
                 )}
               >
-                <FormattedDate date={new Date("2023-07-30T03:49:52.406Z")} />
+                {orderForPage ? (
+                  <FormattedDate
+                    date={new Date(`${orderForPage?.createdAt}`)}
+                  />
+                ) : (
+                  "Нет данных"
+                )}
               </div>
               <div className={classNames(styles.priceBlock)}>
                 <div
@@ -383,7 +221,7 @@ export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
                     "mr-2"
                   )}
                 >
-                  12342
+                  {`${totalPrice ?? "Нет данных"}`}
                 </div>
                 <CurrencyIcon type="primary" />
               </div>
@@ -397,7 +235,43 @@ export const DetailsOrder: FC<MyComponentProps> = ({ modal = false }) => {
   return null;
 };
 
-const ContentForModal: FC = () => {
+const ContentForModal: FC<MyComponentProps> = ({ order }) => {
+  const listIngredients = useAppSelector(
+    (state) => state.listIngredientsSlice.ingredients
+  );
+  let sum: number | undefined = 0;
+
+  if (listIngredients?.length !== 0 && order?.ingredients.length !== 0) {
+    sum = order?.ingredients.reduce((previousValue, currentValue) => {
+      const priceObject = listIngredients?.find(
+        (item) => item._id === currentValue
+      );
+      const newAcc = previousValue + (priceObject?.price || 0);
+
+      return newAcc;
+    }, 0);
+  }
+
+  const objectOrderIngredients = order?.ingredients.reduce<{
+    [key: string]: { count: number; info?: IIngredient };
+  }>((acc, ingredientId) => {
+    acc[ingredientId] = {
+      count: (acc[ingredientId]?.count || 0) + 1,
+      info: listIngredients?.find((item) => item._id === ingredientId),
+    };
+    return acc;
+  }, {});
+
+  const totalPrice =
+    objectOrderIngredients &&
+    Object.keys(objectOrderIngredients).reduce((acc, item) => {
+      const sum =
+        acc +
+        objectOrderIngredients[item]!.info!.price *
+          objectOrderIngredients[item].count;
+      return sum;
+    }, 0);
+
   return (
     <div className={classNames(styles.contentModal)}>
       <div
@@ -407,7 +281,7 @@ const ContentForModal: FC = () => {
           "mt-10"
         )}
       >
-        {"Краторный фалленианский бургер "}
+        {`${order?.name}`}
       </div>
       <div
         className={classNames(
@@ -415,7 +289,7 @@ const ContentForModal: FC = () => {
           "text text_type_main-default mt-3"
         )}
       >
-        Выполнен
+        {`${order?.status === "done" ? "Выполнен" : "Не готов"}`}
       </div>
       <div
         className={classNames(
@@ -427,300 +301,55 @@ const ContentForModal: FC = () => {
         {"Состав: "}
       </div>
       <div className={classNames(styles.scrollBock, "mb-3 mt-1")}>
-        <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-          {/*иконка*/}
-          <div className={styles.leftBlock}>
-            <div className={classNames(styles.imageStyle, "mr-3")}>
-              <img
-                className={styles.imgStyle}
-                src={"https://code.s3.yandex.net/react/code/bun-02-mobile.png"}
-              ></img>
-            </div>
-            {/*название*/}
-            <div
-              className={classNames(
-                styles.nameBurger,
-                "text text_type_main-default"
-              )}
-            >
-              {"Краторный фалленианский бургер "}
-            </div>
-          </div>
-          {/*кол-во элементов */}
-          <div className={styles.rightBlock}>
-            <div
-              className={classNames(
-                styles.countIngred,
-                "text text text_type_digits-default"
-              )}
-            >
-              {"2"} x
-            </div>
-            {/*цена элементов*/}
-            <div
-              className={classNames(
-                styles.Price,
-                "text text text_type_digits-default mr-2 ml-2"
-              )}
-            >
-              1823
-            </div>
+        {objectOrderIngredients &&
+          Object.keys(objectOrderIngredients).map((item) => {
+            const object = objectOrderIngredients[item];
 
-            <CurrencyIcon type="primary" />
-          </div>
-        </div>
-        <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
-          {/*иконка*/}
-          <div className={styles.leftBlock}>
-            <div className={classNames(styles.imageStyle, "mr-3")}>
-              <img
-                className={styles.imgStyle}
-                src={"https://code.s3.yandex.net/react/code/bun-02-mobile.png"}
-              ></img>
-            </div>
-            {/*название*/}
-            <div
-              className={classNames(
-                styles.nameBurger,
-                "text text_type_main-default"
-              )}
-            >
-              {"Краторный фалленианский бургер "}
-            </div>
-          </div>
-          {/*кол-во элементов */}
-          <div className={styles.rightBlock}>
-            <div
-              className={classNames(
-                styles.countIngred,
-                "text text text_type_digits-default"
-              )}
-            >
-              {"2"} x
-            </div>
-            {/*цена элементов*/}
-            <div
-              className={classNames(
-                styles.Price,
-                "text text text_type_digits-default mr-2 ml-2"
-              )}
-            >
-              1823
-            </div>
+            return (
+              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
+                {/*иконка*/}
+                <div className={styles.leftBlock}>
+                  <div className={classNames(styles.imageStyle, "mr-3")}>
+                    <img
+                      className={styles.imgStyle}
+                      src={`${object?.info?.image_mobile}`}
+                    ></img>
+                  </div>
+                  {/*название*/}
+                  <div
+                    className={classNames(
+                      styles.nameBurger,
+                      "text text_type_main-default"
+                    )}
+                  >
+                    {`${order?.name}`}
+                  </div>
+                </div>
+                {/*кол-во элементов */}
+                <div className={styles.rightBlock}>
+                  <div
+                    className={classNames(
+                      styles.countIngred,
+                      "text text text_type_digits-default"
+                    )}
+                  >
+                    {`${object.count}`} x
+                  </div>
+                  {/*цена элементов*/}
+                  <div
+                    className={classNames(
+                      styles.Price,
+                      "text text text_type_digits-default mr-2 ml-2"
+                    )}
+                  >
+                    {`${object?.info?.price}`}
+                  </div>
 
-            <CurrencyIcon type="primary" />
-          </div>
-        </div>
-        {/*<div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>*/}
-        {/*  /!*иконка*!/*/}
-        {/*  <div className={styles.leftBlock}>*/}
-        {/*    <div className={classNames(styles.imageStyle, "mr-3")}>*/}
-        {/*      <img*/}
-        {/*        className={styles.imgStyle}*/}
-        {/*        src={"https://code.s3.yandex.net/react/code/bun-02-mobile.png"}*/}
-        {/*      ></img>*/}
-        {/*    </div>*/}
-        {/*    /!*название*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.nameBurger,*/}
-        {/*        "text text_type_main-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"Краторный фалленианский бургер "}*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*  /!*кол-во элементов *!/*/}
-        {/*  <div className={styles.rightBlock}>*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.countIngred,*/}
-        {/*        "text text text_type_digits-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"2"} x*/}
-        {/*    </div>*/}
-        {/*    /!*цена элементов*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.Price,*/}
-        {/*        "text text text_type_digits-default mr-2 ml-2"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      1823*/}
-        {/*    </div>*/}
-
-        {/*    <CurrencyIcon type="primary" />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-        {/*<div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>*/}
-        {/*  /!*иконка*!/*/}
-        {/*  <div className={styles.leftBlock}>*/}
-        {/*    <div className={classNames(styles.imageStyle, "mr-3")}>*/}
-        {/*      <img*/}
-        {/*        className={styles.imgStyle}*/}
-        {/*        src={"https://code.s3.yandex.net/react/code/bun-02-mobile.png"}*/}
-        {/*      ></img>*/}
-        {/*    </div>*/}
-        {/*    /!*название*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.nameBurger,*/}
-        {/*        "text text_type_main-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"Краторный фалленианский бургер "}*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*  /!*кол-во элементов *!/*/}
-        {/*  <div className={styles.rightBlock}>*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.countIngred,*/}
-        {/*        "text text text_type_digits-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"2"} x*/}
-        {/*    </div>*/}
-        {/*    /!*цена элементов*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.Price,*/}
-        {/*        "text text text_type_digits-default mr-2 ml-2"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      1823*/}
-        {/*    </div>*/}
-
-        {/*    <CurrencyIcon type="primary" />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-        {/*<div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>*/}
-        {/*  /!*иконка*!/*/}
-        {/*  <div className={styles.leftBlock}>*/}
-        {/*    <div className={classNames(styles.imageStyle, "mr-3")}>*/}
-        {/*      <img*/}
-        {/*        className={styles.imgStyle}*/}
-        {/*        src={"https://code.s3.yandex.net/react/code/bun-02-mobile.png"}*/}
-        {/*      ></img>*/}
-        {/*    </div>*/}
-        {/*    /!*название*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.nameBurger,*/}
-        {/*        "text text_type_main-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"Краторный фалленианский бургер "}*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*  /!*кол-во элементов *!/*/}
-        {/*  <div className={styles.rightBlock}>*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.countIngred,*/}
-        {/*        "text text text_type_digits-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"2"} x*/}
-        {/*    </div>*/}
-        {/*    /!*цена элементов*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.Price,*/}
-        {/*        "text text text_type_digits-default mr-2 ml-2"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      1823*/}
-        {/*    </div>*/}
-
-        {/*    <CurrencyIcon type="primary" />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-        {/*<div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>*/}
-        {/*  /!*иконка*!/*/}
-        {/*  <div className={styles.leftBlock}>*/}
-        {/*    <div className={classNames(styles.imageStyle, "mr-3")}>*/}
-        {/*      <img*/}
-        {/*        className={styles.imgStyle}*/}
-        {/*        src={"https://code.s3.yandex.net/react/code/bun-02-mobile.png"}*/}
-        {/*      ></img>*/}
-        {/*    </div>*/}
-        {/*    /!*название*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.nameBurger,*/}
-        {/*        "text text_type_main-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"Краторный фалленианский бургер "}*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*  /!*кол-во элементов *!/*/}
-        {/*  <div className={styles.rightBlock}>*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.countIngred,*/}
-        {/*        "text text text_type_digits-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"2"} x*/}
-        {/*    </div>*/}
-        {/*    /!*цена элементов*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.Price,*/}
-        {/*        "text text text_type_digits-default mr-2 ml-2"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      1823*/}
-        {/*    </div>*/}
-
-        {/*    <CurrencyIcon type="primary" />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-        {/*<div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>*/}
-        {/*  /!*иконка*!/*/}
-        {/*  <div className={styles.leftBlock}>*/}
-        {/*    <div className={classNames(styles.imageStyle, "mr-3")}>*/}
-        {/*      <img*/}
-        {/*        className={styles.imgStyle}*/}
-        {/*        src={"https://code.s3.yandex.net/react/code/bun-02-mobile.png"}*/}
-        {/*      ></img>*/}
-        {/*    </div>*/}
-        {/*    /!*название*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.nameBurger,*/}
-        {/*        "text text_type_main-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"Краторный фалленианский бургер "}*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*  /!*кол-во элементов *!/*/}
-        {/*  <div className={styles.rightBlock}>*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.countIngred,*/}
-        {/*        "text text text_type_digits-default"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      {"2"} x*/}
-        {/*    </div>*/}
-        {/*    /!*цена элементов*!/*/}
-        {/*    <div*/}
-        {/*      className={classNames(*/}
-        {/*        styles.Price,*/}
-        {/*        "text text text_type_digits-default mr-2 ml-2"*/}
-        {/*      )}*/}
-        {/*    >*/}
-        {/*      1823*/}
-        {/*    </div>*/}
-
-        {/*    <CurrencyIcon type="primary" />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
+                  <CurrencyIcon type="primary" />
+                </div>
+              </div>
+            );
+          })}
       </div>
 
       {/*дата создания и стоимость*/}
@@ -731,7 +360,7 @@ const ContentForModal: FC = () => {
             "text text_type_main-default text_color_inactive"
           )}
         >
-          <FormattedDate date={new Date("2023-07-30T03:49:52.406Z")} />
+          <FormattedDate date={new Date(`${order?.createdAt}`)} />
         </div>
         <div className={classNames(styles.priceBlock)}>
           <div
@@ -741,7 +370,7 @@ const ContentForModal: FC = () => {
               "mr-2"
             )}
           >
-            12342
+            {`${totalPrice}`}
           </div>
           <CurrencyIcon type="primary" />
         </div>

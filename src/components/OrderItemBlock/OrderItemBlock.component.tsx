@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from "react";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 import classNames from "classnames";
 import styles from "./styles.module.css";
 import {
@@ -6,23 +6,66 @@ import {
   FormattedDate,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { IIngredient, Order } from "../../types/types";
-import { fetchData } from "../../services/reducers/listIngredientsSlice";
-import { useAppDispatch, useAppSelector } from "../../services/store/store";
+import { useAppDispatch } from "../../services/store/store";
+import { wsModalOrderFeed } from "../../services/actions/actions";
+import nextId from "react-id-generator";
 
 interface IOrder {
   order?: Order;
-  ingredients?: IIngredient[];
+  listIngredients?: IIngredient[] | null;
+  link?: string;
 }
 
-export const OrderItemBlock: FC<IOrder> = ({ order, ingredients }) => {
+export const OrderItemBlock: FC<IOrder> = ({
+  order,
+  listIngredients,
+  link,
+}) => {
   const dispatch = useAppDispatch();
+  let sum: number | undefined = 0;
+  const orderLeght = order?.ingredients?.length ?? 0;
+  const arrayStyle = [
+    "imgItemOne",
+    "imgItemTwo",
+    "imgItemThree",
+    "imgItemFour",
+    "imgItemFive",
+    "imgItemSix",
+  ];
 
-  const priceOrder = order?.ingredients.reduce((item) => {
-    return 0;
-  }, 0);
+  if (listIngredients?.length !== 0 && order?.ingredients.length !== 0) {
+    sum = order?.ingredients.reduce((previousValue, currentValue) => {
+      const priceObject = listIngredients?.find(
+        (item) => item._id === currentValue
+      );
+      const newAcc = previousValue + (priceObject?.price || 0);
+
+      return newAcc;
+    }, 0);
+  }
+
+  const arrayIngredientsImage = order?.ingredients.reduce<IIngredient[]>(
+    (previousValue, currentValue) => {
+      const priceObject = listIngredients?.find(
+        (item) => item._id === currentValue
+      );
+      if (!!priceObject) {
+        previousValue.push(priceObject);
+      }
+
+      return previousValue;
+    },
+    []
+  );
+  const openModal = useCallback(() => {
+    if (!!order) {
+      dispatch(wsModalOrderFeed(order));
+      window.history.replaceState(null, "", `/${link}/${order.number}`);
+    }
+  }, [dispatch, order]);
 
   return (
-    <div>
+    <div onClick={openModal}>
       <div className={classNames(styles.orderCardWrap, "pt-6", "mb-5")}>
         <div className={classNames(styles.numberOfDate, "mb-6")}>
           <div
@@ -51,92 +94,72 @@ export const OrderItemBlock: FC<IOrder> = ({ order, ingredients }) => {
           )}
         >
           {`${order?.name} `}
+          <div
+            className={classNames(
+              styles.statusBurger,
+              `${order?.status === "done" ? styles.statusReady : ""}`,
+              "text text_type_main-small "
+            )}
+          >
+            {`${order?.status === "done" ? "Выполнен" : order?.status}`}
+          </div>
         </div>
+
         <div className={classNames(styles.ingredAndPrice, "mb-6")}>
           <div className={classNames(styles.ingredBlock)}>
             {/*начало блока*/}
-            <div className={classNames(styles.imgItemOne)}>
-              <div className={styles.imageStyle}>
-                <img
-                  className={styles.imgStyle}
-                  src={
-                    "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                  }
-                ></img>
-              </div>
-            </div>
-            <div className={classNames(styles.imgItemTwo)}>
-              <div className={styles.imageStyle}>
-                <img
-                  className={styles.imgStyle}
-                  src={
-                    "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                  }
-                ></img>
-              </div>
-            </div>
-            <div className={classNames(styles.imgItemThree)}>
-              <div className={styles.imageStyle}>
-                <img
-                  className={styles.imgStyle}
-                  src={
-                    "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                  }
-                ></img>
-              </div>
-            </div>
-            <div className={classNames(styles.imgItemFour)}>
-              <div className={styles.imageStyle}>
-                <img
-                  className={styles.imgStyle}
-                  src={
-                    "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                  }
-                ></img>
-              </div>
-            </div>
-            <div className={classNames(styles.imgItemFive)}>
-              <div className={styles.imageStyle}>
-                <img
-                  className={styles.imgStyle}
-                  src={
-                    "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                  }
-                ></img>
-              </div>
-            </div>
-            {true && (
-              <div className={classNames(styles.imgItemSix)}>
-                <div className={styles.imageStyle}>
-                  <img
-                    className={styles.imgStyle}
-                    src={
-                      "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                    }
-                  ></img>
-                </div>
-              </div>
-            )}
-            {true && (
-              <div className={classNames(styles.imgItemSix)}>
-                <div className={styles.imageStyle}>
-                  <img
-                    className={styles.imgStyleWithNumbers}
-                    src={
-                      "https://code.s3.yandex.net/react/code/bun-02-mobile.png"
-                    }
-                  ></img>
+            {arrayIngredientsImage?.map((item, index) => {
+              if (index <= 4) {
+                return (
                   <div
-                    className={classNames(
-                      styles.withNumbers,
-                      "text text_type_digits-default"
-                    )}
+                    className={classNames(styles[arrayStyle[index]])}
+                    key={nextId()}
                   >
-                    {"+3"}
+                    <div className={styles.imageStyle}>
+                      <img
+                        className={styles.imgStyle}
+                        src={`${item.image_mobile}`}
+                      ></img>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
+                );
+              }
+              if (index === 5 && orderLeght > 6) {
+                return (
+                  <div className={classNames(styles.imgItemSix)}>
+                    <div className={styles.imageStyle}>
+                      <img
+                        className={styles.imgStyleWithNumbers}
+                        src={`${item.image_mobile}`}
+                      ></img>
+                      <div
+                        className={classNames(
+                          styles.withNumbers,
+                          "text text_type_digits-default"
+                        )}
+                      >
+                        {`+${
+                          order?.ingredients?.length &&
+                          order?.ingredients?.length - 6
+                        }`}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              if (index === 5 && orderLeght === 6) {
+                return (
+                  <div className={classNames(styles[arrayStyle[index]])}>
+                    <div className={styles.imageStyle}>
+                      <img
+                        className={styles.imgStyle}
+                        src={`${item.image_mobile}`}
+                      ></img>
+                    </div>
+                  </div>
+                );
+              }
+            })}
 
             {/*конец блока*/}
           </div>
@@ -148,7 +171,7 @@ export const OrderItemBlock: FC<IOrder> = ({ order, ingredients }) => {
                 "mr-1"
               )}
             >
-              12342
+              {`${sum}`}
             </div>
             <CurrencyIcon type="primary" />
           </div>

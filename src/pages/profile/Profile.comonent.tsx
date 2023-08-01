@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 import { AppHeader, isActiveEnum } from "../../components/AppHeader/AppHeader";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Input,
@@ -13,7 +13,7 @@ import { Store } from "react-notifications-component";
 import classNames from "classnames";
 import { setHeaderActive } from "../../services/reducers/stateAppBehavior";
 
-export const Profile = () => {
+export const Profile = memo(() => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,10 +38,10 @@ export const Profile = () => {
     setName(nameStore!);
   }, [emailStore, nameStore]);
 
-  const onExit = () => {
+  const onExit = useCallback(() => {
     dispatch(logoutApp());
     navigate("/login");
-  };
+  }, []);
 
   const activeProfile =
     location.pathname === "/profile" ? "" : "text_color_inactive";
@@ -83,10 +83,10 @@ export const Profile = () => {
       });
     }
   };
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     setName(nameStore);
     setEmail(emailStore);
-  };
+  }, [emailStore, nameStore]);
 
   const CenterProfile = () => {
     return (
@@ -245,4 +245,4 @@ export const Profile = () => {
       </div>
     </div>
   );
-};
+});

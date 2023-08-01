@@ -36,6 +36,7 @@
     border-radius: 40px;
     padding-left: 24px;
     padding-right: 24px;
+    cursor: pointer;
 }
 
 .numberOfDate {
@@ -79,6 +80,7 @@
     left: 50px;
     z-index: 6;
 }
+
 
 .imgItemThree {
     position: absolute;
@@ -183,8 +185,17 @@
 .columnOne {
     display: flex;
     flex: 1 0 50%;
-
     color: rgb(0, 204, 203);
     flex-direction: column;
 }
+.statusBurger{
+    margin-top: 10px;
+
+}
+.statusReady{
+    color: rgb(0,204,203);
+
+}
+
+
 

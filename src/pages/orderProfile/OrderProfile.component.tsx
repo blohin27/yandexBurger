@@ -1,17 +1,52 @@
-import React, { FC } from "react";
+import React, { FC, memo, useEffect } from "react";
 import styles from "./styles.module.css";
 import { OrderItemBlock } from "../../components";
 
-export const OrderProfile: FC = () => {
+import { useAppDispatch, useAppSelector } from "../../services/store/store";
+
+import { fetchData } from "../../services/reducers/listIngredientsSlice";
+import { connect } from "../../services/actions/actionsMyOrder";
+import nextId from "react-id-generator";
+
+export const OrderProfile: FC = memo(() => {
+  const dispatch = useAppDispatch();
+  const accessToken = useAppSelector(
+    (state) => state.userProfile.accessToken
+  )?.split(" ")[1];
+
+  const orderObject = useAppSelector(
+    (state) => state.MyOrderFeedReducer.ordersObject
+  );
+  const listIngredients = useAppSelector(
+    (state) => state.listIngredientsSlice.ingredients
+  );
+
+  useEffect(() => {
+    dispatch(
+      connect(`wss://norma.nomoreparties.space/orders?token=${accessToken}`)
+    );
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchData());
+  }, []);
+
   return (
     <div>
       <div className={styles.band}>
         <div>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(() => {
-            return <OrderItemBlock />;
+          {orderObject?.orders?.map((value, index) => {
+            return (
+              <OrderItemBlock
+                link={"profile/order"}
+                key={nextId()}
+                order={value}
+                listIngredients={listIngredients}
+              />
+            );
           })}
         </div>
       </div>
     </div>
   );
-};
+});

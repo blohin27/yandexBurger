@@ -30,12 +30,18 @@ export const DesignBurger = () => {
   const data = useAppSelector(
     (state) => state.listIngredientsSlice.ingredients
   );
+
   const arrayIngredientsForCreatedOrder = useAppSelector(
     (state) => state.listIngredientsConstructorSlice
   );
+  const ingredientsConstructor = useAppSelector(
+    (state) => state.listIngredientsConstructorSlice.ingredientsConstructor
+  );
+
   const ingredientDetails = useAppSelector(
     (state) => state.currentIngredientDetailsSlice.currentIngredient
   );
+
   const orderDetails = useAppSelector((state) => state.createdOrderSlice);
   let ingredientforModalByUpdate = useMemo(
     () => data?.filter((item) => item?._id === location.state?.id),
@@ -95,9 +101,18 @@ export const DesignBurger = () => {
     } else {
       dispatch(setOpenOrder(true));
 
-      dispatch(createdOrderRequest(arrayIngredientsForCreatedOrder));
+      dispatch(
+        createdOrderRequest({ ...arrayIngredientsForCreatedOrder, accessToken })
+      );
     }
-  }, [accessToken, dispatch, location.pathname, navigate]);
+  }, [
+    accessToken,
+    arrayIngredientsForCreatedOrder,
+    dispatch,
+    ingredientsConstructor,
+    location.pathname,
+    navigate,
+  ]);
 
   return (
     <>

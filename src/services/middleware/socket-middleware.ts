@@ -4,7 +4,6 @@ import {
 } from "@reduxjs/toolkit";
 import { Middleware } from "redux";
 import { RootState } from "../store/store";
-import { wsMessage } from "../actions/actions";
 
 export type TwsActionTypes = {
   wsConnect: ActionCreatorWithPayload<string>;
@@ -40,7 +39,6 @@ export const socketMiddleware = (
       } = wsActions;
 
       if (wsConnect.match(action)) {
-        console.log("connect");
         url = action.payload;
         socket = new WebSocket(url);
         isConnected = true;
@@ -53,21 +51,21 @@ export const socketMiddleware = (
         };
 
         socket.onerror = (err) => {
-          console.log("error");
+          console.log("errorMD");
         };
 
         socket.onmessage = (event) => {
           const { data } = event;
           const parsedData = JSON.parse(data);
-          dispatch(wsMessage(parsedData));
+
+          dispatch(onMessage(parsedData));
         };
 
         socket.onclose = (event) => {
           if (event.code !== 1000) {
-            console.log("error");
             dispatch(onError(event.code.toString()));
           }
-          console.log("close");
+
           dispatch(onClose());
 
           if (isConnected) {

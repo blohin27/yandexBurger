@@ -1,4 +1,4 @@
-import { createReducer } from "@reduxjs/toolkit";
+import { createAsyncThunk, createReducer } from "@reduxjs/toolkit";
 import {
   wsOpen,
   wsClose,
@@ -6,8 +6,8 @@ import {
   wsError,
   wsConnecting,
   wsModalOrderFeed,
-} from "../actions/actions";
-import { Order, OrderFeedStore } from "../../types/types";
+} from "../actions/actionsMyOrder";
+import { OrderFeedStore } from "../../types/types";
 
 export enum WebsocketStatus {
   CONNECTING = "CONNECTING...",
@@ -22,7 +22,7 @@ const initialState: OrderFeedStore = {
   modalOrderFeed: undefined,
 };
 
-export const OrderFeedReducer = createReducer(initialState, (builder) => {
+export const MyOrderFeedReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(wsConnecting, (state) => {
       state.status = WebsocketStatus.CONNECTING;
@@ -33,15 +33,19 @@ export const OrderFeedReducer = createReducer(initialState, (builder) => {
     })
     .addCase(wsClose, (state) => {
       state.status = WebsocketStatus.OFFLINE;
+      console.log("MyOrderFeedReducer wsClose");
     })
     .addCase(wsError, (state, action) => {
       state.connectionError = action.payload;
+      console.log("MyOrderFeedReducer wsError");
     })
     .addCase(wsMessage, (state, action) => {
       state.ordersObject = action.payload;
+      console.log("MyOrderFeedReducer .addCase(wsMessage");
     })
     .addCase(wsModalOrderFeed, (state, action) => {
       state.modalOrderFeed = action.payload;
+      console.log("MyOrderFeedReducer wsModalOrderFeed");
     });
 });
 

@@ -36,9 +36,10 @@ export const App: React.FC = () => {
             element={<AuthorizedRouteElement element={<OrderProfile />} />}
           />
         </Route>
+        <Route path={"/profile/order/:id"} element={<DetailsOrder />} />
         <Route
           path={"/register"}
-          element={<NotAuthorizedRouteElement element={<Register />} />}
+          element={<NotAuthorizedRouteElement element={<Ingredients />} />}
         />
         <Route
           path={"/forgot-password"}

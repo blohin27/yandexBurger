@@ -1,8 +1,9 @@
 import styles from "./styles.module.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import { setHeaderActive } from "../../services/reducers/stateAppBehavior";
 import classNames from "classnames";
+import { Order as IOrder } from "../../types/types";
 
 import { Outlet, useLocation, useParams } from "react-router";
 import {
@@ -14,10 +15,12 @@ import {
 import { DetailsOrder } from "../detailsOrder";
 import {
   connect,
+  disconnect,
   wsClose,
   wsConnecting,
   wsError,
   wsMessage,
+  wsModalOrderFeed,
   wsOpen,
 } from "../../services/actions/actions";
 import { fetchData } from "../../services/reducers/listIngredientsSlice";
@@ -26,15 +29,31 @@ export const OrderFeed = () => {
   const ordersArray = useAppSelector(
     (state) => state.OrderFeedReducer.ordersObject.orders
   );
+  const totalToday = useAppSelector(
+    (state) => state.OrderFeedReducer.ordersObject.totalToday
+  );
+  const totalOrder = useAppSelector(
+    (state) => state.OrderFeedReducer.ordersObject.total
+  );
   const listIngredients = useAppSelector(
     (state) => state.listIngredientsSlice.ingredients
   );
+  const modalOrder = useAppSelector(
+    (state) => state.OrderFeedReducer.modalOrderFeed
+  );
+  const [modalState, setModalState] = useState<{
+    open: boolean;
+    order: IOrder | undefined;
+  }>({ open: false, order: undefined });
 
   const dispatch = useAppDispatch();
   const params = useParams();
 
   useEffect(() => {
     dispatch(connect("wss://norma.nomoreparties.space/orders/all"));
+    return () => {
+      dispatch(disconnect());
+    };
   }, [dispatch]);
 
   useEffect(() => {
@@ -42,10 +61,14 @@ export const OrderFeed = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!listIngredients) {
-      dispatch(fetchData());
-    }
+    dispatch(fetchData());
   }, []);
+
+  const orderArrayReady = ordersArray?.filter((item) => item.status === "done");
+
+  const orderArrayNotReady = ordersArray?.filter(
+    (item) => item.status !== "done"
+  );
 
   return (
     <>
@@ -67,8 +90,10 @@ export const OrderFeed = () => {
                 {ordersArray?.map((item) => {
                   return (
                     <OrderItemBlock
+                      key={item._id}
                       order={item}
-                      ingredients={listIngredients ?? undefined}
+                      link={"feed"}
+                      listIngredients={listIngredients}
                     />
                   );
                 })}
@@ -92,14 +117,9 @@ export const OrderFeed = () => {
                         "text text_type_digits-default "
                       )}
                     >
-                      {[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                        17,
-                      ]
-                        .slice(0, 10)
-                        .map((item, index) => {
-                          return <div>{item}</div>;
-                        })}
+                      {orderArrayReady?.slice(0, 10).map((item, index) => {
+                        return <div>{`${item.number}`}</div>;
+                      })}
                     </div>
                     <div
                       className={classNames(
@@ -107,14 +127,9 @@ export const OrderFeed = () => {
                         "text text_type_digits-default"
                       )}
                     >
-                      {[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                        17,
-                      ]
-                        .slice(10, 20)
-                        .map((item, index) => {
-                          return <div>{item}</div>;
-                        })}
+                      {orderArrayReady?.slice(10, 20).map((item, index) => {
+                        return <div>{`${item.number}`}</div>;
+                      })}
                     </div>
                   </div>
                 </div>
@@ -134,14 +149,9 @@ export const OrderFeed = () => {
                         "text text_type_digits-default "
                       )}
                     >
-                      {[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                        17,
-                      ]
-                        .slice(0, 10)
-                        .map((item, index) => {
-                          return <div>{item}</div>;
-                        })}
+                      {orderArrayNotReady?.slice(0, 10).map((item, index) => {
+                        return <div>{`${item.number}`}</div>;
+                      })}
                     </div>
                     <div
                       className={classNames(
@@ -149,14 +159,9 @@ export const OrderFeed = () => {
                         "text text_type_digits-default"
                       )}
                     >
-                      {[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                        17,
-                      ]
-                        .slice(10, 20)
-                        .map((item, index) => {
-                          return <div>{item}</div>;
-                        })}
+                      {orderArrayNotReady?.slice(10, 20).map((item, index) => {
+                        return <div>{`${item.number}`}</div>;
+                      })}
                     </div>
                   </div>
                 </div>
@@ -176,7 +181,7 @@ export const OrderFeed = () => {
                     "text text_type_digits-large"
                   )}
                 >
-                  398
+                  {`${totalOrder}`}
                 </div>
               </div>
               <div className={classNames(styles.totalOrders, "mt-15")}>
@@ -194,13 +199,20 @@ export const OrderFeed = () => {
                     "text text_type_digits-large"
                   )}
                 >
-                  2
+                  {`${totalToday}`}
                 </div>
               </div>
             </div>
           </div>
-          <Modal open={false} onClose={() => {}} title={"#0111"}>
-            <DetailsOrder modal />
+          <Modal
+            open={!!modalOrder}
+            onClose={() => {
+              dispatch(wsModalOrderFeed(undefined));
+              window.history.replaceState(null, "", `/feed`);
+            }}
+            title={`#${modalOrder?.number}`}
+          >
+            <DetailsOrder modal order={modalOrder} />
           </Modal>
         </div>
       )}
