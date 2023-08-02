@@ -57,10 +57,6 @@ export const OrderFeed = () => {
     dispatch(setHeaderActive("OrderFeed"));
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   dispatch(fetchData());
-  // }, []);
-
   const orderArrayReady = ordersArray?.filter((item) => item.status === "done");
 
   const orderArrayNotReady = ordersArray?.filter(

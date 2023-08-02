@@ -34,7 +34,6 @@ export const AuthorizedRouteElement: FC<Props> = ({ element }) => {
 
   useEffect(() => {
     if (!!accessToken && location.state !== "") {
-      //navigate(`${location.state}`);
     }
   }, [accessToken, location.state]);
 

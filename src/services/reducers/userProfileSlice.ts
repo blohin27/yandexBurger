@@ -105,12 +105,6 @@ export const editUser = createAsyncThunk(
       },
       body: JSON.stringify(objReq),
     });
-    // if (response.status === 200) {
-    //   const data: IResponseUpdateUser = await response.json();
-    //   return data;
-    // } else {
-    //   throw new Error();
-    // }
     const data = await checkResponse<IResponseUpdateUser>(response);
     return data;
   }
@@ -126,12 +120,6 @@ export const getUser = createAsyncThunk(
         "Content-Type": "application/json",
       },
     });
-    // if (response.status === 200) {
-    //   const data: IResponseUpdateUser = await response.json();
-    //   return data;
-    // } else {
-    //   throw new Error();
-    // }
     const data = await checkResponse<IResponseUpdateUser>(response);
     return data;
   }
@@ -147,12 +135,7 @@ export const refreshToken = createAsyncThunk(
       },
       body: JSON.stringify({ token: localStorage.getItem("refreshToken") }),
     });
-    // if (response.status === 200) {
-    //   const data: IResponseRefreshToken = await response.json();
-    //   return data;
-    // } else {
-    //   throw new Error();
-    // }
+
     const data = await checkResponse<IResponseRefreshToken>(response);
     return data;
   }
@@ -169,12 +152,6 @@ export const forgotPasswordReset = createAsyncThunk(
       body: JSON.stringify(param),
     });
 
-    // if (response.status === 200) {
-    //   const data: { success: string; message: string } = await response.json();
-    //   return data;
-    // } else {
-    //   throw new Error();
-    // }
     const data = await checkResponse<{ success: string; message: string }>(
       response
     );
@@ -195,12 +172,6 @@ export const createUser = createAsyncThunk(
       },
       body: JSON.stringify(param),
     });
-    // if (response.status === 200) {
-    //   const data: IResponseCreateUser = await response.json();
-    //   return data;
-    // } else {
-    //   throw new Error();
-    // }
     const data = await checkResponse<IResponseCreateUser>(response);
     return data;
   }
@@ -221,15 +192,6 @@ export const authLogin = createAsyncThunk(
     });
     const data = await checkResponse<IResponseCreateUser>(response);
     return data;
-
-    // if (response.status === 200) {
-    //   const data: IResponseCreateUser = await response.json();
-    //   return data;
-    // } else {
-    //   param?.setEmptyFieldLogin?.();
-
-    //   throw new Error();
-    // }
   }
 );
 const userProfileSlice = createSlice({

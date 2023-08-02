@@ -58,12 +58,6 @@ export const createdOrderRequest = createAsyncThunk(
       body: JSON.stringify(bodyRequest),
     });
 
-    // if (response.status === 200) {
-    //   const data: TypeOrderDetails = await response.json();
-    //   return data;
-    // } else {
-    //   throw new Error();
-    // }
     const data = await checkResponse<TypeOrderDetails>(response);
     return data;
   }

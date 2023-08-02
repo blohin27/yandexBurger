@@ -23,12 +23,7 @@ export const fetchData = createAsyncThunk(
   "listIngredients/fetchData",
   async (_, { rejectWithValue }) => {
     const response = await fetch(INGREDIENTS_URL);
-    // if (response.status === 200) {
-    //   const data: IResponse = await response.json();
-    //   return data.data;
-    // } else {
-    //   throw new Error();
-    // }
+
     const data = await checkResponse<IResponse>(response);
     return data.data;
   }

@@ -27,11 +27,7 @@ export const OrderProfile: FC = memo(() => {
     dispatch(
       connect(`wss://norma.nomoreparties.space/orders?token=${accessToken}`)
     );
-  }, []);
-
-  // useEffect(() => {
-  //   dispatch(fetchData());
-  // }, []);
+  }, [accessToken, dispatch]);
 
   return (
     <div>
