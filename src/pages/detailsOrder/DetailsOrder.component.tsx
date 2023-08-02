@@ -9,7 +9,6 @@ import { IIngredient, Order } from "../../types/types";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import { useParams } from "react-router";
 import { WebsocketStatus } from "../../services/reducers/orderWsReducer";
-import { connect, disconnect } from "../../services/actions/actions";
 import { fetchData } from "../../services/reducers/listIngredientsSlice";
 import nextId from "react-id-generator";
 import { getOrder } from "../../services/reducers/createdOrderSlice";
@@ -47,16 +46,10 @@ export const DetailsOrder: FC<MyComponentProps> = ({
   );
 
   // useEffect(() => {
-  //   if (params.id) {
-  //     dispatch(getOrder(String(params.id)));
+  //   if (!listIngredients) {
+  //     dispatch(fetchData());
   //   }
-  // }, [dispatch, params.id]);
-
-  useEffect(() => {
-    if (!listIngredients) {
-      dispatch(fetchData());
-    }
-  }, [dispatch, listIngredients]);
+  // }, [dispatch, listIngredients]);
 
   const getOrderGetch = useCallback(() => {
     if (params.id) {
@@ -77,7 +70,14 @@ export const DetailsOrder: FC<MyComponentProps> = ({
     }
 
     return resp;
-  }, [myOrdersArray, ordersArray, params.id]);
+  }, [
+    getOrderGetch,
+    myOrdersArray,
+    ordersArray,
+    params.id,
+    status,
+    statusMyOrders,
+  ]);
 
   const getObjectOrderIngredients = useCallback(
     (item?: Order) => {
@@ -170,12 +170,12 @@ export const DetailsOrder: FC<MyComponentProps> = ({
             </div>
             <div className={classNames(styles.scrollBock, "mb-3 mt-1")}>
               {objectOrderIngredients &&
-                Object.keys(objectOrderIngredients).map((item) => {
+                Object.keys(objectOrderIngredients).map((item, index) => {
                   const object = objectOrderIngredients[item];
 
                   return (
                     <div
-                      key={nextId()}
+                      key={`${item + index}`}
                       className={classNames(styles.structure, "mb-1 mt-3 pr-6")}
                     >
                       {/*иконка*/}
@@ -328,11 +328,14 @@ const ContentForModal: FC<MyComponentProps> = ({ order }) => {
       </div>
       <div className={classNames(styles.scrollBock, "mb-3 mt-1")}>
         {objectOrderIngredients &&
-          Object.keys(objectOrderIngredients).map((item) => {
+          Object.keys(objectOrderIngredients).map((item, index) => {
             const object = objectOrderIngredients[item];
 
             return (
-              <div className={classNames(styles.structure, "mb-1 mt-3 pr-6")}>
+              <div
+                className={classNames(styles.structure, "mb-1 mt-3 pr-6")}
+                key={`${item + index}`}
+              >
                 {/*иконка*/}
                 <div className={styles.leftBlock}>
                   <div className={classNames(styles.imageStyle, "mr-3")}>

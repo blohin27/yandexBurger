@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CREATED_ORDER_URL, INGREDIENTS_URL } from "../../const/const";
-import { bodyRequestForOrder } from "../../common/helper";
+import { bodyRequestForOrder, checkResponse } from "../../common/helper";
 
 import { IIngredient } from "../../types/types";
 import { Order } from "../../components";
 import { Order as IOrder } from "../../types/types";
+import { Store } from "react-notifications-component";
 
 type TypeOrder = { number: number };
 
@@ -48,42 +49,38 @@ export const createdOrderRequest = createAsyncThunk(
   ) => {
     const { accessToken, ...rest } = param;
     const bodyRequest = bodyRequestForOrder(rest);
-    try {
-      const response = await fetch(CREATED_ORDER_URL, {
-        method: "POST",
-        headers: {
-          Authorization: accessToken ?? "",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyRequest),
-      });
+    const response = await fetch(CREATED_ORDER_URL, {
+      method: "POST",
+      headers: {
+        Authorization: accessToken ?? "",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyRequest),
+    });
 
-      if (response.status === 200) {
-        const data: TypeOrderDetails = await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+    // if (response.status === 200) {
+    //   const data: TypeOrderDetails = await response.json();
+    //   return data;
+    // } else {
+    //   throw new Error();
+    // }
+    const data = await checkResponse<TypeOrderDetails>(response);
+    return data;
   }
 );
 
 export const getOrder = createAsyncThunk(
   "createdOrderSlice/getOrder",
   async (params: string, { rejectWithValue }) => {
-    try {
-      const response = await fetch(`${CREATED_ORDER_URL}/${params}`);
-      if (response.status === 200) {
-        const data: GetOrder = await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка получения данныз");
-    }
+    const response = await fetch(`${CREATED_ORDER_URL}/${params}`);
+    // if (response.status === 200) {
+    //   const data: GetOrder = await response.json();
+    //   return data;
+    // } else {
+    //   throw new Error();
+    // }
+    const data = await checkResponse<GetOrder>(response);
+    return data;
   }
 );
 
@@ -118,6 +115,24 @@ const createdOrderSlice = createSlice({
       action: PayloadAction<GetOrder>
     ) => {
       state.currentOrder = action.payload;
+    },
+    [getOrder.rejected.toString()]: (
+      state: ICreatedOrder,
+      action: PayloadAction<GetOrder>
+    ) => {
+      Store.addNotification({
+        title: "Ошибка в получении заказа",
+        message: "",
+        type: "warning",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
     },
   },
 });

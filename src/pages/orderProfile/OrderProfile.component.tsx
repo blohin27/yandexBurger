@@ -29,9 +29,9 @@ export const OrderProfile: FC = memo(() => {
     );
   }, []);
 
-  useEffect(() => {
-    dispatch(fetchData());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchData());
+  // }, []);
 
   return (
     <div>
@@ -44,7 +44,7 @@ export const OrderProfile: FC = memo(() => {
               return (
                 <OrderItemBlock
                   link={"profile/order"}
-                  key={nextId()}
+                  key={`${value._id + index}`}
                   order={value}
                   listIngredients={listIngredients}
                 />

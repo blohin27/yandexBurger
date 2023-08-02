@@ -48,6 +48,7 @@ export const OrderFeed = () => {
   useEffect(() => {
     dispatch(connect("wss://norma.nomoreparties.space/orders/all"));
     return () => {
+      console.log("DISSCONECT FEED");
       dispatch(disconnect());
     };
   }, [dispatch]);
@@ -56,9 +57,9 @@ export const OrderFeed = () => {
     dispatch(setHeaderActive("OrderFeed"));
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchData());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchData());
+  // }, []);
 
   const orderArrayReady = ordersArray?.filter((item) => item.status === "done");
 
@@ -83,10 +84,10 @@ export const OrderFeed = () => {
           <div className={styles.content}>
             <div className={styles.band}>
               <div className={"pr-2"}>
-                {ordersArray?.map((item) => {
+                {ordersArray?.map((item, index) => {
                   return (
                     <OrderItemBlock
-                      key={item._id}
+                      key={`${item._id + index}`}
                       order={item}
                       link={"feed"}
                       listIngredients={listIngredients}
@@ -114,7 +115,11 @@ export const OrderFeed = () => {
                       )}
                     >
                       {orderArrayReady?.slice(0, 10).map((item, index) => {
-                        return <div>{`${item.number}`}</div>;
+                        return (
+                          <div
+                            key={`${item._id + index}`}
+                          >{`${item.number}`}</div>
+                        );
                       })}
                     </div>
                     <div
@@ -124,7 +129,11 @@ export const OrderFeed = () => {
                       )}
                     >
                       {orderArrayReady?.slice(10, 20).map((item, index) => {
-                        return <div>{`${item.number}`}</div>;
+                        return (
+                          <div
+                            key={`${item._id + index}`}
+                          >{`${item.number}`}</div>
+                        );
                       })}
                     </div>
                   </div>
@@ -146,7 +155,11 @@ export const OrderFeed = () => {
                       )}
                     >
                       {orderArrayNotReady?.slice(0, 10).map((item, index) => {
-                        return <div>{`${item.number}`}</div>;
+                        return (
+                          <div
+                            key={`${item._id + index}`}
+                          >{`${item.number}`}</div>
+                        );
                       })}
                     </div>
                     <div
@@ -156,7 +169,11 @@ export const OrderFeed = () => {
                       )}
                     >
                       {orderArrayNotReady?.slice(10, 20).map((item, index) => {
-                        return <div>{`${item.number}`}</div>;
+                        return (
+                          <div
+                            key={`${item._id + index}`}
+                          >{`${item.number}`}</div>
+                        );
                       })}
                     </div>
                   </div>

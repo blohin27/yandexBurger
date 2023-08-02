@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, Route, Routes } from "react-router";
 import { DesignBurger } from "../../pages/designBurger";
 import { Profile } from "../../pages/profile";
@@ -17,8 +17,15 @@ import {
 import { AuthorizedRouteElement } from "../AuthorizedRouteElement";
 import { NotAuthorizedRouteElement } from "../NotAuthorizedRouteElement";
 import { ReactNotifications } from "react-notifications-component";
+import { fetchData } from "../../services/reducers/listIngredientsSlice";
+import { useAppDispatch } from "../../services/store/store";
 
 export const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchData());
+  }, [dispatch]);
   return (
     <Container>
       <ReactNotifications />

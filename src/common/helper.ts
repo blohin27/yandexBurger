@@ -45,3 +45,12 @@ export function searchTotalPrice(array: IIngredient[]) {
 
   return result;
 }
+
+export async function checkResponse<T>(response: Response): Promise<T> {
+  if (response.status === 200) {
+    const data: T = await response.json();
+    return data;
+  } else {
+    throw new Error();
+  }
+}

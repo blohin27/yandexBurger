@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { INGREDIENTS_URL } from "../../const/const";
 import { IIngredient } from "../../types/types";
+import { checkResponse } from "../../common/helper";
+import { Store } from "react-notifications-component";
 
 interface IResponse {
   success: boolean;
@@ -20,17 +22,15 @@ const initialState: IStateListIngredients = {
 export const fetchData = createAsyncThunk(
   "listIngredients/fetchData",
   async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch(INGREDIENTS_URL);
-      if (response.status === 200) {
-        const data: IResponse = await response.json();
-        return data.data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка получения данныз");
-    }
+    const response = await fetch(INGREDIENTS_URL);
+    // if (response.status === 200) {
+    //   const data: IResponse = await response.json();
+    //   return data.data;
+    // } else {
+    //   throw new Error();
+    // }
+    const data = await checkResponse<IResponse>(response);
+    return data.data;
   }
 );
 
@@ -57,6 +57,19 @@ const listIngredients = createSlice({
       action: PayloadAction<IIngredient[] | null>
     ) => {
       state.isFetchError = true;
+      Store.addNotification({
+        title: "Ошибка в получении ингредиентов",
+        message: "",
+        type: "warning",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
     },
   },
 });

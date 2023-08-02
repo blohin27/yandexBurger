@@ -50,10 +50,6 @@ export const DesignBurger = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
-
-  useEffect(() => {
     if (data?.length && ingredientforModalByUpdate?.length) {
       dispatch(setIngredientDetails(ingredientforModalByUpdate[0]));
     }

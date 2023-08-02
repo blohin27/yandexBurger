@@ -127,7 +127,7 @@ export const OrderItemBlock: FC<IOrder> = ({
                 return (
                   <div
                     className={classNames(styles[arrayStyle[index]])}
-                    key={nextId()}
+                    key={`${item._id + index}`}
                   >
                     <div className={styles.imageStyle}>
                       <img
@@ -140,7 +140,10 @@ export const OrderItemBlock: FC<IOrder> = ({
               }
               if (index === 5 && orderLeght > 6) {
                 return (
-                  <div className={classNames(styles.imgItemSix)}>
+                  <div
+                    key={`${item._id + index}`}
+                    className={classNames(styles.imgItemSix)}
+                  >
                     <div className={styles.imageStyle}>
                       <img
                         className={styles.imgStyleWithNumbers}
@@ -163,7 +166,10 @@ export const OrderItemBlock: FC<IOrder> = ({
               }
               if (index === 5 && orderLeght === 6) {
                 return (
-                  <div className={classNames(styles[arrayStyle[index]])}>
+                  <div
+                    key={`${item._id + index}`}
+                    className={classNames(styles[arrayStyle[index]])}
+                  >
                     <div className={styles.imageStyle}>
                       <img
                         className={styles.imgStyle}
