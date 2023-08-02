@@ -64,7 +64,7 @@ export const AppHeader: FC<Props> = ({ isActive }) => {
           </Link>
         </div>
         <div className={styles.centralBlock}>
-          <a href={"#"}>
+          <a href={"/"}>
             <Logo></Logo>
           </a>
         </div>
