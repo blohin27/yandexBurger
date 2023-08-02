@@ -7,7 +7,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router";
 
 interface Props {
-  element: ReactElement<any, any>;
+  element: React.ReactNode;
 }
 
 /*
@@ -34,7 +34,6 @@ export const AuthorizedRouteElement: FC<Props> = ({ element }) => {
 
   useEffect(() => {
     if (!!accessToken && location.state !== "") {
-      //navigate(`${location.state}`);
     }
   }, [accessToken, location.state]);
 

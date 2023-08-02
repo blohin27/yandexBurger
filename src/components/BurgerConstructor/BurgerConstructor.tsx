@@ -26,9 +26,10 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
   const dispatch = useAppDispatch();
   const { arrayBun } = useIngredientsCategories(selectedItems);
 
-  useEffect(() => {
-    arrayBun[0] && dispatch(addIngredientInConstructor(arrayBun[0]));
-  }, [arrayBun, dispatch]);
+  // автоматом выбирать булки по умолчанию
+  // useEffect(() => {
+  //   arrayBun[0] && dispatch(addIngredientInConstructor(arrayBun[0]));
+  // }, [arrayBun, dispatch]);
 
   const ingredients = useAppSelector(
     (state) => state.listIngredientsConstructorSlice.ingredientsConstructor
@@ -56,7 +57,7 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
         <div ref={dropTarget} className={styles.selectedIngredients}>
           <div className={styles.selectedIngredient}>
             <div className={styles.dragonAndDropItem}></div>
-            {ingredientsBun.length > 0 && (
+            {ingredientsBun.length > 0 ? (
               <ConstructorElement
                 type={"top"}
                 extraClass={styles.backgroundItem}
@@ -65,6 +66,17 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
                 price={ingredientsBun[0].price}
                 thumbnail={ingredientsBun[0].image_large}
               />
+            ) : (
+              <div className={classNames(styles.emptyBunRelativeUp)}>
+                <div
+                  className={classNames(
+                    styles.emptyBunAbsolute,
+                    "text text_type_digits-default"
+                  )}
+                >
+                  Выберите булку
+                </div>
+              </div>
             )}
           </div>
 
@@ -87,7 +99,7 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
           </div>
           <div className={styles.selectedIngredient}>
             <div className={styles.dragonAndDropItem}></div>
-            {ingredientsBun.length > 0 && (
+            {ingredientsBun.length > 0 ? (
               <ConstructorElement
                 type={"bottom"}
                 extraClass={styles.backgroundItem}
@@ -96,6 +108,17 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
                 price={ingredientsBun[1].price}
                 thumbnail={ingredientsBun[1].image_large}
               />
+            ) : (
+              <div className={classNames(styles.emptyBunRelativeDown)}>
+                <div
+                  className={classNames(
+                    styles.emptyBunAbsolute,
+                    "text text_type_digits-default"
+                  )}
+                >
+                  Выберите булку
+                </div>
+              </div>
             )}
           </div>
         </div>

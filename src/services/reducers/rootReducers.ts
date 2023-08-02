@@ -5,6 +5,8 @@ import listIngredientsConstructorSlice from "./listIngredientsConstructorSlice";
 import createdOrderSlice from "./createdOrderSlice";
 import userProfile from "./userProfileSlice";
 import stateAppBehaviorSlice from "./stateAppBehavior";
+import { OrderFeedReducer } from "./orderWsReducer";
+import { MyOrderFeedReducer } from "./myOrderWsReducer";
 
 const rootReducer = combineReducers({
   listIngredientsSlice,
@@ -13,6 +15,8 @@ const rootReducer = combineReducers({
   createdOrderSlice,
   userProfile,
   stateAppBehaviorSlice,
+  OrderFeedReducer,
+  MyOrderFeedReducer,
 });
 
 export default rootReducer;

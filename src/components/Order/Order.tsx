@@ -17,7 +17,6 @@ export const Order: React.FC = memo(() => {
     <div className={styles.wrap}>
       {orderDetails?.success ? (
         <>
-          {" "}
           <p
             className={classNames(
               styles.number,

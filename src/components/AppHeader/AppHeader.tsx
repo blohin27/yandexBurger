@@ -47,7 +47,7 @@ export const AppHeader: FC<Props> = ({ isActive }) => {
               isActive={headerActive === isActiveEnum.DesignBurger}
             />
           </Link>
-          <Link to={"/order"}>
+          <Link to={"/feed"}>
             <NavItem
               text={"Лента заказов"}
               icon={
@@ -64,7 +64,7 @@ export const AppHeader: FC<Props> = ({ isActive }) => {
           </Link>
         </div>
         <div className={styles.centralBlock}>
-          <a href={"#"}>
+          <a href={"/"}>
             <Logo></Logo>
           </a>
         </div>

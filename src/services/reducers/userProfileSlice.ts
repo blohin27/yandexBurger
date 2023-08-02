@@ -9,7 +9,7 @@ import {
   PASSWORD_RESET_URL,
   UPDATE_TOKEN_URL,
 } from "../../const/const";
-import { bodyUserProfileReset } from "../../common/helper";
+import { bodyUserProfileReset, checkResponse } from "../../common/helper";
 
 import { Store } from "react-notifications-component";
 
@@ -52,20 +52,16 @@ const initialState: IUserProfile = {
 export const logoutApp = createAsyncThunk(
   "userProfileSlice/logoutApp",
   async (param: string | undefined, { rejectWithValue }) => {
-    try {
-      const response = await fetch(LOGOUT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: localStorage.getItem("refreshToken") }),
-      });
-      if (response.status === 200) {
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
+    const response = await fetch(LOGOUT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: localStorage.getItem("refreshToken") }),
+    });
+    if (response.status === 200) {
+    } else {
+      throw new Error();
     }
   }
 );
@@ -73,20 +69,17 @@ export const forgotPassword = createAsyncThunk(
   "userProfileSlice/forgotPassword",
   async (param: { email: string }, { rejectWithValue }) => {
     const bodyRequest = bodyUserProfileReset(param.email);
-    try {
-      const response = await fetch(PASSWORD_RESET_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyRequest),
-      });
-      if (response.status === 200) {
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
+
+    const response = await fetch(PASSWORD_RESET_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+    if (response.status === 200) {
+    } else {
+      throw new Error();
     }
   }
 );
@@ -102,97 +95,67 @@ export const editUser = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    try {
-      const objReq = { ...params };
-      delete objReq.accessToken;
-      const response = await fetch(AUTH_GET_USER_URL, {
-        method: "PATCH",
-        headers: {
-          Authorization: params.accessToken ?? "",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(objReq),
-      });
-      if (response.status === 200) {
-        const data: IResponseUpdateUser = await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+    const objReq = { ...params };
+    delete objReq.accessToken;
+    const response = await fetch(AUTH_GET_USER_URL, {
+      method: "PATCH",
+      headers: {
+        Authorization: params.accessToken ?? "",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(objReq),
+    });
+    const data = await checkResponse<IResponseUpdateUser>(response);
+    return data;
   }
 );
 
 export const getUser = createAsyncThunk(
   "userProfileSlice/getUser",
   async (param: string | undefined, { rejectWithValue }) => {
-    try {
-      const response = await fetch(AUTH_PATCH_USER_URL, {
-        method: "GET",
-        headers: {
-          Authorization: param ?? "",
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 200) {
-        const data: IResponseUpdateUser = await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+    const response = await fetch(AUTH_PATCH_USER_URL, {
+      method: "GET",
+      headers: {
+        Authorization: param ?? "",
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await checkResponse<IResponseUpdateUser>(response);
+    return data;
   }
 );
 
 export const refreshToken = createAsyncThunk(
   "userProfileSlice/refreshToken",
   async (_param: string | undefined, { rejectWithValue }) => {
-    try {
-      const response = await fetch(UPDATE_TOKEN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token: localStorage.getItem("refreshToken") }),
-      });
-      if (response.status === 200) {
-        const data: IResponseRefreshToken = await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+    const response = await fetch(UPDATE_TOKEN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: localStorage.getItem("refreshToken") }),
+    });
+
+    const data = await checkResponse<IResponseRefreshToken>(response);
+    return data;
   }
 );
 
 export const forgotPasswordReset = createAsyncThunk(
   "userProfileSlice/forgotPasswordReset",
   async (param: { password: string; token: string }, { rejectWithValue }) => {
-    try {
-      const response = await fetch(PASSWORD_RESET_RESET_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(param),
-      });
+    const response = await fetch(PASSWORD_RESET_RESET_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(param),
+    });
 
-      if (response.status === 200) {
-        const data: { success: string; message: string } =
-          await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+    const data = await checkResponse<{ success: string; message: string }>(
+      response
+    );
+    return data;
   }
 );
 
@@ -202,23 +165,15 @@ export const createUser = createAsyncThunk(
     param: { email: string; password: string; name: string },
     { rejectWithValue }
   ) => {
-    try {
-      const response = await fetch(CREATE_USER_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(param),
-      });
-      if (response.status === 200) {
-        const data: IResponseCreateUser = await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+    const response = await fetch(CREATE_USER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(param),
+    });
+    const data = await checkResponse<IResponseCreateUser>(response);
+    return data;
   }
 );
 
@@ -228,38 +183,15 @@ export const authLogin = createAsyncThunk(
     param: { email: string; password: string; setEmptyFieldLogin?: () => void },
     { rejectWithValue }
   ) => {
-    try {
-      const response = await fetch(AUTH_LOGIN_USER_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(param),
-      });
-
-      if (response.status === 200) {
-        const data: IResponseCreateUser = await response.json();
-        return data;
-      } else {
-        param?.setEmptyFieldLogin?.();
-        Store.addNotification({
-          title: "Ошибка авторизации",
-          message: "",
-          type: "danger",
-          insert: "top",
-          container: "top-center",
-          animationIn: ["animate__animated", "animate__fadeIn"],
-          animationOut: ["animate__animated", "animate__fadeOut"],
-          dismiss: {
-            duration: 2000,
-            onScreen: false,
-          },
-        });
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+    const response = await fetch(AUTH_LOGIN_USER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(param),
+    });
+    const data = await checkResponse<IResponseCreateUser>(response);
+    return data;
   }
 );
 const userProfileSlice = createSlice({
@@ -299,9 +231,38 @@ const userProfileSlice = createSlice({
     [createUser.rejected.toString()]: (
       state: IUserProfile,
       action: PayloadAction<IResponseCreateUser>
-    ) => {},
+    ) => {
+      Store.addNotification({
+        title: "Ошибка при создании юзера",
+        message: "",
+        type: "warning",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
+    },
     [forgotPassword.fulfilled.toString()]: (state: IUserProfile) => {
       state.accessResetPasswordStepTwo = 1;
+    },
+    [forgotPassword.rejected.toString()]: (state: IUserProfile) => {
+      Store.addNotification({
+        title: "Ошибка в сбросе пароля",
+        message: "",
+        type: "warning",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
     },
     [forgotPasswordReset.pending.toString()]: (
       state: IUserProfile,
@@ -341,6 +302,24 @@ const userProfileSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       localStorage.setItem("refreshToken", action.payload.refreshToken);
     },
+    [authLogin.rejected.toString()]: (
+      state: IUserProfile,
+      action: PayloadAction<IResponseCreateUser>
+    ) => {
+      Store.addNotification({
+        title: "Ошибка авторизации",
+        message: "",
+        type: "danger",
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
+    },
     [getUser.fulfilled.toString()]: (
       state: IUserProfile,
       action: PayloadAction<IResponseUpdateUser>
@@ -358,6 +337,24 @@ const userProfileSlice = createSlice({
       state.name = action.payload.user.name;
       state.email = action.payload.user.email;
     },
+    [editUser.rejected.toString()]: (
+      state: IUserProfile,
+      action: PayloadAction<IResponseUpdateUser>
+    ) => {
+      Store.addNotification({
+        title: "Ошибка в изменении пользователя",
+        message: "",
+        type: "warning",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
+    },
     [refreshToken.fulfilled.toString()]: (
       state: IUserProfile,
       action: PayloadAction<IResponseCreateUser>
@@ -373,6 +370,21 @@ const userProfileSlice = createSlice({
       state.email = undefined;
       state.name = undefined;
       localStorage.removeItem("refreshToken");
+    },
+    [logoutApp.rejected.toString()]: (state: IUserProfile) => {
+      Store.addNotification({
+        title: "Ошибка в при выходе",
+        message: "",
+        type: "warning",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
     },
   },
 });

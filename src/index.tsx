@@ -7,6 +7,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { BrowserRouter } from "react-router-dom";
 import "react-notifications-component/dist/theme.css";
+import "./styles.module.css";
+import "normalize.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

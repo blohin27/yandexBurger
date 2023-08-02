@@ -1,8 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CREATED_ORDER_URL } from "../../const/const";
-import { bodyRequestForOrder } from "../../common/helper";
+import { CREATED_ORDER_URL, INGREDIENTS_URL } from "../../const/const";
+import { bodyRequestForOrder, checkResponse } from "../../common/helper";
 
-import { IStateListIngredientsConstructor } from "../../types/types";
+import { IIngredient } from "../../types/types";
+import { Order } from "../../components";
+import { Order as IOrder } from "../../types/types";
+import { Store } from "react-notifications-component";
 
 type TypeOrder = { number: number };
 
@@ -16,35 +19,56 @@ interface ICreatedOrder {
   OrderDetails: TypeOrderDetails | null;
   openOrder: boolean;
   isFetchError?: boolean;
+  currentOrder: GetOrder | undefined;
+}
+
+export interface GetOrder {
+  success: boolean;
+  orders: IOrder[];
+}
+
+export interface IStateListIngredientsConstructorWithAcessToken {
+  ingredientsConstructor: IIngredient[];
+  totalPrice: number;
+  ingredientsBun: IIngredient[];
+  accessToken?: string;
 }
 
 const initialState: ICreatedOrder = {
   OrderDetails: null,
   openOrder: false,
   isFetchError: false,
+  currentOrder: undefined,
 };
 
 export const createdOrderRequest = createAsyncThunk(
   "createdOrderSlice/createdOrderRequest",
-  async (param: IStateListIngredientsConstructor, { rejectWithValue }) => {
-    const bodyRequest = bodyRequestForOrder(param);
-    try {
-      const response = await fetch(CREATED_ORDER_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyRequest),
-      });
-      if (response.status === 200) {
-        const data: TypeOrderDetails = await response.json();
-        return data;
-      } else {
-        throw new Error();
-      }
-    } catch (e) {
-      return rejectWithValue("Ошибка сработал rejectWithValue ");
-    }
+  async (
+    param: IStateListIngredientsConstructorWithAcessToken,
+    { rejectWithValue }
+  ) => {
+    const { accessToken, ...rest } = param;
+    const bodyRequest = bodyRequestForOrder(rest);
+    const response = await fetch(CREATED_ORDER_URL, {
+      method: "POST",
+      headers: {
+        Authorization: accessToken ?? "",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyRequest),
+    });
+
+    const data = await checkResponse<TypeOrderDetails>(response);
+    return data;
+  }
+);
+
+export const getOrder = createAsyncThunk(
+  "createdOrderSlice/getOrder",
+  async (params: string, { rejectWithValue }) => {
+    const response = await fetch(`${CREATED_ORDER_URL}/${params}`);
+    const data = await checkResponse<GetOrder>(response);
+    return data;
   }
 );
 
@@ -73,6 +97,30 @@ const createdOrderSlice = createSlice({
       action: PayloadAction<TypeOrderDetails>
     ) => {
       state.isFetchError = true;
+    },
+    [getOrder.fulfilled.toString()]: (
+      state: ICreatedOrder,
+      action: PayloadAction<GetOrder>
+    ) => {
+      state.currentOrder = action.payload;
+    },
+    [getOrder.rejected.toString()]: (
+      state: ICreatedOrder,
+      action: PayloadAction<GetOrder>
+    ) => {
+      Store.addNotification({
+        title: "Ошибка в получении заказа",
+        message: "",
+        type: "warning",
+        insert: "top",
+        container: "bottom-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: false,
+        },
+      });
     },
   },
 });

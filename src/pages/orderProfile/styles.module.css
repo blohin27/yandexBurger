@@ -1,0 +1,8 @@
+.band {
+    display: flex;
+    margin-right: 20px;
+    flex-direction: column;
+    overflow-y: scroll;
+    max-height: 90vh;
+    margin-top: 40px;
+}

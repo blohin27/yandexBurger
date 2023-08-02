@@ -26,7 +26,6 @@ export const Ingredients = () => {
     if (sessionStorage.getItem("test") === "1") {
       navigate("/", { state: { id: params.id } });
     }
-    dispatch(fetchData());
   }, [dispatch]);
 
   return (

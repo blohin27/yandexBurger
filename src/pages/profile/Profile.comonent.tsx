@@ -1,6 +1,5 @@
 import styles from "./styles.module.css";
-import { AppHeader, isActiveEnum } from "../../components/AppHeader/AppHeader";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Button,
   Input,
@@ -12,8 +11,11 @@ import { Link } from "react-router-dom";
 import { Store } from "react-notifications-component";
 import classNames from "classnames";
 import { setHeaderActive } from "../../services/reducers/stateAppBehavior";
+import { wsModalOrderFeed } from "../../services/actions/actions";
+import { DetailsOrder } from "../detailsOrder";
+import { Modal } from "../../components";
 
-export const Profile = () => {
+export const Profile = memo(() => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,10 +40,14 @@ export const Profile = () => {
     setName(nameStore!);
   }, [emailStore, nameStore]);
 
-  const onExit = () => {
+  const modalOrder = useAppSelector(
+    (state) => state.OrderFeedReducer.modalOrderFeed
+  );
+
+  const onExit = useCallback(() => {
     dispatch(logoutApp());
     navigate("/login");
-  };
+  }, [dispatch, navigate]);
 
   const activeProfile =
     location.pathname === "/profile" ? "" : "text_color_inactive";
@@ -83,17 +89,16 @@ export const Profile = () => {
       });
     }
   };
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     setName(nameStore);
     setEmail(emailStore);
-  };
+  }, [emailStore, nameStore]);
 
   const CenterProfile = () => {
     return (
-      <div>
-        {location.pathname === "/profile/order" && <Outlet />}
-        {location.pathname === "/profile" && (
-          <div className={styles.columnItem}>
+      <div className={classNames(styles.centerProfile)}>
+        <div className={classNames(styles.profileBlock)}>
+          <div>
             <form
               onSubmit={(event) => {
                 event.preventDefault();
@@ -199,49 +204,64 @@ export const Profile = () => {
               </div>
             </form>
           </div>
-        )}
+        </div>
       </div>
     );
   };
 
   return (
     <div>
-      <div className={styles.appContent}>
-        <div className={styles.columnItem}>
-          <div className={"p-6 button"}>
-            <Link to={"/profile"}>
-              <p
-                className={classNames(
-                  "text text_type_main-medium ",
-                  activeProfile
-                )}
-              >
-                Профиль
+      <div className={classNames(styles.appContent)}>
+        {(location.pathname === "/profile" ||
+          location.pathname === "/profile/order") && (
+          <div className={styles.columnItem}>
+            <div className={"p-6 button"}>
+              <Link to={"/profile"}>
+                <p
+                  className={classNames(
+                    "text text_type_main-medium ",
+                    activeProfile
+                  )}
+                >
+                  Профиль
+                </p>
+              </Link>
+            </div>
+            <div className={"p-6 button"}>
+              <Link to={"/profile/order"}>
+                <p
+                  className={classNames(
+                    "text text_type_main-medium",
+                    activeHistoryOrders
+                  )}
+                >
+                  История заказов
+                </p>
+              </Link>
+            </div>
+            <div className={"p-6 button"} onClick={onExit}>
+              <p className="text text_type_main-medium text_color_inactive">
+                Выход
               </p>
-            </Link>
+            </div>
           </div>
-          <div className={"p-6 button"}>
-            <Link to={"/profile/order"}>
-              <p
-                className={classNames(
-                  "text text_type_main-medium",
-                  activeHistoryOrders
-                )}
-              >
-                История заказов
-              </p>
-            </Link>
-          </div>
-          <div className={"p-6 button"} onClick={onExit}>
-            <p className="text text_type_main-medium text_color_inactive">
-              Выход
-            </p>
-          </div>
-        </div>
+        )}
 
-        <CenterProfile />
-        <div className={styles.columnItem}></div>
+        {location.pathname === "/profile" && <CenterProfile />}
+        <div>
+          <Outlet />
+        </div>
+        <Modal
+          open={!!modalOrder}
+          onClose={() => {
+            dispatch(wsModalOrderFeed(undefined));
+            window.history.replaceState(null, "", `/feed`);
+          }}
+          title={`#${modalOrder?.number}`}
+        >
+          <DetailsOrder modal order={modalOrder} />
+        </Modal>
       </div>
     </div>
   );
-};
+});
