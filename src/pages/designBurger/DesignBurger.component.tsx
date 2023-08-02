@@ -100,7 +100,6 @@ export const DesignBurger = () => {
       }
     } else {
       dispatch(setOpenOrder(true));
-
       dispatch(
         createdOrderRequest({ ...arrayIngredientsForCreatedOrder, accessToken })
       );
