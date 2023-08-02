@@ -1,14 +1,7 @@
 import styles from "./styles.module.css";
-import React, {
-  CSSProperties,
-  FC,
-  PropsWithChildren,
-  StyleHTMLAttributes,
-  useEffect,
-} from "react";
+import React, { FC, PropsWithChildren, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
-import { useClipboard } from "use-clipboard-copy";
-import { useNavigate } from "react-router";
+
 import {
   getUser,
   refreshToken,
@@ -16,10 +9,7 @@ import {
 import { AppHeader } from "../AppHeader";
 
 export const Container: FC<PropsWithChildren> = (props) => {
-  const data = useAppSelector((state) => state);
-  const clipboard = useClipboard();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const accessToken = useAppSelector((state) => state.userProfile.accessToken);
 
   useEffect(() => {
@@ -30,7 +20,7 @@ export const Container: FC<PropsWithChildren> = (props) => {
     } else {
       dispatch(getUser(accessToken));
     }
-  }, [accessToken]);
+  }, [accessToken, dispatch]);
 
   return (
     <>

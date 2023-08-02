@@ -9,8 +9,6 @@ import { IIngredient, Order } from "../../types/types";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 import { useParams } from "react-router";
 import { WebsocketStatus } from "../../services/reducers/orderWsReducer";
-import { fetchData } from "../../services/reducers/listIngredientsSlice";
-import nextId from "react-id-generator";
 import { getOrder } from "../../services/reducers/createdOrderSlice";
 
 interface MyComponentProps {
@@ -44,12 +42,6 @@ export const DetailsOrder: FC<MyComponentProps> = ({
   const getOrderItem = useAppSelector(
     (state) => state.createdOrderSlice.currentOrder
   );
-
-  // useEffect(() => {
-  //   if (!listIngredients) {
-  //     dispatch(fetchData());
-  //   }
-  // }, [dispatch, listIngredients]);
 
   const getOrderGetch = useCallback(() => {
     if (params.id) {
