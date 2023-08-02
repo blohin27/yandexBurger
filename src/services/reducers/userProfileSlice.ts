@@ -12,7 +12,6 @@ import {
 import { bodyUserProfileReset, checkResponse } from "../../common/helper";
 
 import { Store } from "react-notifications-component";
-import { GetOrder } from "./createdOrderSlice";
 
 interface IResponseUpdateUser {
   success: boolean;

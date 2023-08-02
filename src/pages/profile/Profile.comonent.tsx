@@ -47,7 +47,7 @@ export const Profile = memo(() => {
   const onExit = useCallback(() => {
     dispatch(logoutApp());
     navigate("/login");
-  }, []);
+  }, [dispatch, navigate]);
 
   const activeProfile =
     location.pathname === "/profile" ? "" : "text_color_inactive";

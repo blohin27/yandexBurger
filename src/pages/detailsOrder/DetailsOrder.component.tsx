@@ -47,9 +47,9 @@ export const DetailsOrder: FC<MyComponentProps> = ({
     if (params.id) {
       dispatch(getOrder(String(params.id)));
     }
-  }, [dispatch, params.id]);
+  }, [params.id]);
 
-  const orderForPage = useMemo(() => {
+  useEffect(() => {
     const arrayOrders = ordersArray ?? myOrdersArray;
     const resp = arrayOrders?.find((item) => String(item.number) === params.id);
     if (
@@ -60,8 +60,6 @@ export const DetailsOrder: FC<MyComponentProps> = ({
     ) {
       getOrderGetch();
     }
-
-    return resp;
   }, [
     getOrderGetch,
     myOrdersArray,
@@ -70,6 +68,13 @@ export const DetailsOrder: FC<MyComponentProps> = ({
     status,
     statusMyOrders,
   ]);
+
+  const orderForPage = useMemo(() => {
+    const arrayOrders = ordersArray ?? myOrdersArray;
+    const resp = arrayOrders?.find((item) => String(item.number) === params.id);
+
+    return resp;
+  }, [myOrdersArray, ordersArray, params.id]);
 
   const getObjectOrderIngredients = useCallback(
     (item?: Order) => {
@@ -128,7 +133,11 @@ export const DetailsOrder: FC<MyComponentProps> = ({
                 "text text_type_digits-medium"
               )}
             >
-              {`#${orderForPage?.number ?? "Нет данных"}`}
+              {`#${
+                orderForPage?.number
+                  ? `${orderForPage.number}`
+                  : getOrderItem?.orders[0]?.number ?? "Нет данных"
+              }`}
             </div>
             <div
               className={classNames(
@@ -137,7 +146,11 @@ export const DetailsOrder: FC<MyComponentProps> = ({
                 "mt-10"
               )}
             >
-              {`${orderForPage?.name ?? "Нет данных"}`}
+              {`#${
+                orderForPage?.name
+                  ? `${orderForPage.name}`
+                  : getOrderItem?.orders[0]?.name ?? "Нет данных"
+              }`}
             </div>
             <div
               className={classNames(
@@ -148,7 +161,10 @@ export const DetailsOrder: FC<MyComponentProps> = ({
               {`${
                 orderForPage?.status === "done"
                   ? "Выполнен"
-                  : orderForPage?.status ?? "Нет данных"
+                  : orderForPage?.status ??
+                    (getOrderItem?.orders[0]?.status === "done"
+                      ? "Выполнен"
+                      : "Нет данных")
               }`}
             </div>
             <div
@@ -228,7 +244,9 @@ export const DetailsOrder: FC<MyComponentProps> = ({
                     date={new Date(`${orderForPage?.createdAt}`)}
                   />
                 ) : (
-                  "Нет данных"
+                  <FormattedDate
+                    date={new Date(`${getOrderItem?.orders[0]?.createdAt}`)}
+                  />
                 )}
               </div>
               <div className={classNames(styles.priceBlock)}>

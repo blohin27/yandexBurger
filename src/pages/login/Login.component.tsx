@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Content } from "../../components";
 import style from "./styles.module.css";
 import {
@@ -23,10 +23,10 @@ export const Login: FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const setEmptyFieldLogin = () => {
+  const setEmptyFieldLogin = useCallback(() => {
     setEmail("");
     setPassword("");
-  };
+  }, []);
 
   useEffect(() => {
     dispatch(setHeaderActive("PersonalCabinet"));

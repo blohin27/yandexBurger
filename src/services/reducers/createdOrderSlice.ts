@@ -73,12 +73,6 @@ export const getOrder = createAsyncThunk(
   "createdOrderSlice/getOrder",
   async (params: string, { rejectWithValue }) => {
     const response = await fetch(`${CREATED_ORDER_URL}/${params}`);
-    // if (response.status === 200) {
-    //   const data: GetOrder = await response.json();
-    //   return data;
-    // } else {
-    //   throw new Error();
-    // }
     const data = await checkResponse<GetOrder>(response);
     return data;
   }
