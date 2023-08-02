@@ -5,7 +5,7 @@ import { OrderItemBlock } from "../../components";
 import { useAppDispatch, useAppSelector } from "../../services/store/store";
 
 import { fetchData } from "../../services/reducers/listIngredientsSlice";
-import { connect } from "../../services/actions/actionsMyOrder";
+import { connect, disconnect } from "../../services/actions/actionsMyOrder";
 import nextId from "react-id-generator";
 import { Outlet, useParams } from "react-router";
 
@@ -27,6 +27,9 @@ export const OrderProfile: FC = memo(() => {
     dispatch(
       connect(`wss://norma.nomoreparties.space/orders?token=${accessToken}`)
     );
+    return () => {
+      dispatch(disconnect());
+    };
   }, [accessToken, dispatch]);
 
   return (
