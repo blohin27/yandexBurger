@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "./services/store/store";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import "react-notifications-component/dist/theme.css";
 import "./styles.module.css";
 import "normalize.css";
@@ -16,9 +16,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     <DndProvider backend={HTML5Backend}>
-      <BrowserRouter>
+      <HashRouter>
         <App />
-      </BrowserRouter>
+      </HashRouter>
     </DndProvider>
   </Provider>
 );
