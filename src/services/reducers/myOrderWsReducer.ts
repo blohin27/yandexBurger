@@ -15,7 +15,7 @@ export enum WebsocketStatus {
   OFFLINE = "OFFLINE",
 }
 
-const initialState: OrderFeedStore = {
+export const initialState: OrderFeedStore = {
   status: WebsocketStatus.OFFLINE,
   connectionError: "",
   ordersObject: {},

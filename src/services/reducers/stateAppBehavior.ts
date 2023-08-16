@@ -4,7 +4,7 @@ interface IStateAppBehavior {
   headerActive?: string;
 }
 
-const initialState: IStateAppBehavior = {
+export const initialState: IStateAppBehavior = {
   headerActive: "",
 };
 

@@ -34,7 +34,7 @@ export interface IStateListIngredientsConstructorWithAcessToken {
   accessToken?: string;
 }
 
-const initialState: ICreatedOrder = {
+export const initialState: ICreatedOrder = {
   OrderDetails: null,
   openOrder: false,
   isFetchError: false,

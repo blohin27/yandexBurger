@@ -5,7 +5,7 @@ import {
 } from "../../types/types";
 import { searchTotalPrice } from "../../common/helper";
 
-const initialState: IStateListIngredientsConstructor = {
+export const initialState: IStateListIngredientsConstructor = {
   ingredientsConstructor: [],
   ingredientsBun: [],
   totalPrice: 0,

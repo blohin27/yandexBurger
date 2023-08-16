@@ -14,7 +14,7 @@ interface IStateListIngredients {
   isFetchError?: boolean;
 }
 
-const initialState: IStateListIngredients = {
+export const initialState: IStateListIngredients = {
   ingredients: [],
   isFetchError: false,
 };
