@@ -56,11 +56,11 @@ export const Modal: FC<PropsWithChildren<IModal>> = ({
   if (!open) return null;
 
   return (
-    <div className={styles.modal}>
+    <div className={styles.modal} data-cy="modal">
       <div className={classNames(styles.wrap)} onClick={stopPropagation}>
         <div className={classNames(styles.header)}>
           <div className={styles.title}>{title}</div>
-          <div className={styles.icon} onClick={onClose}>
+          <div className={styles.icon} onClick={onClose} data-cy="close-modal">
             <CloseIcon type="primary" />
           </div>
         </div>

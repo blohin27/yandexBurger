@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "user": {
+    "email": "feyavo2313@cwtaa.com",
+    "name": "йцу"
+  },
+  "accessToken": "string",
+  "refreshToken": "string"
+}

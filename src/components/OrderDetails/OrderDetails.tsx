@@ -20,6 +20,7 @@ export const OrderDetails: FC<IOrderDetails> = ({ openOrder, price }) => {
           htmlType="button"
           type="primary"
           size="large"
+          data-cy="my-button-create-order"
           onClick={openOrder}
         >
           Оформить заказ

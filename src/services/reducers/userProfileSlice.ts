@@ -41,7 +41,7 @@ interface IUserProfile {
   isLoading?: "pending" | "fulfilled" | "reject";
 }
 
-const initialState: IUserProfile = {
+export const initialState: IUserProfile = {
   email: undefined,
   name: undefined,
   accessToken: undefined,

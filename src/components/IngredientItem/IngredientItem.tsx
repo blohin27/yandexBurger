@@ -33,7 +33,7 @@ export const IngredientItem: FC<IIngredientItemComponent> = ({ item }) => {
   );
 
   return (
-    <div ref={dragRef} className={classNames(styles.wrap)}>
+    <div ref={dragRef} className={classNames(styles.wrap)} data-cy="my-element">
       <div className={classNames(styles.item)} onClick={onClick}>
         <div className={classNames("ml-4 pl-4 mr-3 pr-4 ", styles.main)}>
           <img

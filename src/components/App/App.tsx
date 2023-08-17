@@ -50,7 +50,7 @@ export const App: React.FC = () => {
         </Route>
         <Route
           path={"/register"}
-          element={<NotAuthorizedRouteElement element={<Ingredients />} />}
+          element={<NotAuthorizedRouteElement element={<Register />} />}
         />
         <Route
           path={"/forgot-password"}

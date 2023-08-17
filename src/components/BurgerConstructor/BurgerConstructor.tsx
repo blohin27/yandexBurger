@@ -54,7 +54,12 @@ export const BurgerConstructor: FC<IBurgerConstructor> = ({
   return (
     <div className={styles.wrap}>
       <div className={classNames(styles.selectedIngredientsWrap)}>
-        <div ref={dropTarget} className={styles.selectedIngredients}>
+        <div
+          ref={dropTarget}
+          className={styles.selectedIngredients}
+          data-cy="my-constructor"
+          style={{ border: "2px solid red" }}
+        >
           <div className={styles.selectedIngredient}>
             <div className={styles.dragonAndDropItem}></div>
             {ingredientsBun.length > 0 ? (

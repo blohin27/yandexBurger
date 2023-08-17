@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IIngredient } from "../../types/types";
 
 interface ICurrentIngrendient {
   currentIngredient: IIngredient | null;
 }
 
-const initialState: ICurrentIngrendient = {
+export const initialState: ICurrentIngrendient = {
   currentIngredient: null,
 };
 
